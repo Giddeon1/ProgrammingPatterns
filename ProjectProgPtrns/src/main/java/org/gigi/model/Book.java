@@ -3,8 +3,10 @@ package org.gigi.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
-@Setter //tostring?hash?equals?
+@Setter
 public abstract class Book {
     protected String isbn;
     protected String title;
@@ -14,11 +16,37 @@ public abstract class Book {
     protected int copies;
 
     public Book(String isbn, String title, String authorFName, String authorLName, int year, int copies) {
+        if (!isNameValid(authorFName, authorLName)) {
+            throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
+        }
+        if (!isValidYear(year)) {
+            throw new IllegalArgumentException("Invalid Year, the published year should be less than or equals to current year");
+        }
         this.isbn = isbn;
         this.title = title;
         this.authorFName = authorFName;
         this.authorLName = authorLName;
         this.year = year;
         this.copies = copies;
+    }
+
+    /**
+     * method that checks if the name is not valid(has numbers or special charcters)
+     * @param firstName the firstName of the author
+     * @param lastName the last name of the author
+     * @return true or false if the name is valid or not
+     */
+    private static boolean isNameValid(String firstName, String lastName) {
+        String regex = "^[a-zA-Z\\s]+$"; // Only letters and spaces allowed
+        return firstName != null && lastName != null && firstName.matches(regex) && lastName.matches(regex);
+    }
+
+    /**
+     * check whether the publishing year is either less than the current year or past the current year
+     * @param yearPublished the year the book was published
+     * @return true if the published year is <= current year or false if not
+     */
+    private static boolean isValidYear(int yearPublished) {
+        return yearPublished <= LocalDate.now().getYear();
     }
 }
