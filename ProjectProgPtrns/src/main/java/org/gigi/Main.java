@@ -8,11 +8,7 @@ public class Main {
         RegularBook book = new RegularBook("8900","dog cat",
                 "Gideon", "Eleboda",2000,20);
 
-        
-
-
-
-
+        System.out.println("DID IT WORK????");
 
 
 
