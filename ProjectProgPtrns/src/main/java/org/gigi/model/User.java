@@ -1,11 +1,14 @@
 package org.gigi.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@Getter
+@Setter
 public abstract class User {
-    private static int counter = 0;
     protected int userId;
     protected String firstName;
     protected String lastName;
@@ -17,8 +20,8 @@ public abstract class User {
     protected int overDueBookCount;
     protected List<Book> issuedBooks;
 
-    public User(String firstName, String lastName, String email, String phone, String address, LocalDate dateOfBirth, int maxBooksAllowed) {
-        this.userId = counter++;
+    public User(int userId, String firstName, String lastName, String email, String phone, String address, LocalDate dateOfBirth,int maxBooksAllowed) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -29,4 +32,11 @@ public abstract class User {
         this.overDueBookCount = 0;
         this.issuedBooks = new ArrayList<>();
     }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+
+
 }
