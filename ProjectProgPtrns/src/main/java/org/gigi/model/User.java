@@ -21,6 +21,9 @@ public abstract class User {
         if (!isNameValid(firstName, lastName)) {
             throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
         }
+        if (!isEmailValid(email)) {
+            throw new IllegalArgumentException("Invalid email");
+        }
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,6 +42,19 @@ public abstract class User {
     private static boolean isNameValid(String firstName, String lastName) {
         String regex = "^[a-zA-Z\\s]+$"; // Only letters and spaces allowed
         return firstName != null && lastName != null && firstName.matches(regex) && lastName.matches(regex);
+    }
+
+    /**
+     * checks if email is valid, ex: the email has to have @ and a .
+     * @param email the string to be checked
+     * @return true or false whether the email is valid or not
+     */
+    private static boolean isEmailValid(String email) {
+        if (email == null) {
+            return false;
+        }
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        return email.matches(emailRegex);
     }
 
 
