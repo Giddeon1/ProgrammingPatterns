@@ -19,4 +19,10 @@ public class BorrowedBookRecord {
     public boolean isOverDue() {
         return LocalDate.now().isAfter(dueDate);
     }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+
 }
