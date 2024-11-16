@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
+@Setter //tostring?hash?equals?
 public abstract class Book {
     protected String isbn;
     protected String title;
@@ -21,6 +21,4 @@ public abstract class Book {
         this.year = year;
         this.copies = copies;
     }
-
-
 }

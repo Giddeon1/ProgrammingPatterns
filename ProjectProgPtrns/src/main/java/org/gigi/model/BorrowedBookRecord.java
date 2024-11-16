@@ -1,12 +1,22 @@
 package org.gigi.model;
 
-import javax.xml.crypto.Data;
-import java.util.Date;
-
+import lombok.Getter;
+import java.time.LocalDate;
+@Getter
 public class BorrowedBookRecord {
-    private Date dueDate;
-    private Date issueDate;
-    private boolean isOverDue;
+    private LocalDate dueDate;
+    private LocalDate issueDate;
     private User owner;
     private Librarian librarian;
+
+    public BorrowedBookRecord(LocalDate dueDate, LocalDate issueDate, User owner, Librarian librarian) {
+        this.dueDate = dueDate;
+        this.issueDate = issueDate;
+        this.owner = owner;
+        this.librarian = librarian;
+    }
+
+    public boolean isOverDue() {
+        return LocalDate.now().isAfter(dueDate);
+    }
 }
