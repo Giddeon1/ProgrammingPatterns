@@ -12,7 +12,6 @@ public class Librarian extends User {
         super(nextId++, firstName, lastName, email, 0);
     }
 
-
     @Override
     public String getDetails() {
         return "Librarian details:" +
@@ -23,9 +22,6 @@ public class Librarian extends User {
                 "\nAmount of overdue books" + overDueBookCount +
                 "\nAmount of books owned" + issuedBooks;
     }
-
-
-
 
     @Override
     public List<Book> getOverdueBooks() {
@@ -51,30 +47,30 @@ public class Librarian extends User {
 
     @Override
     public List<Book> searchBook(String keyword) {
-        List<Book> results = new ArrayList<>();
-        for (Book book : availableBooks) { // Assume availableBooks is a List<Book> but there is an error and i need to fix it later
-            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getAuthorFName().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getAuthorLName().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getIsbn().contains(keyword)) {
-                results.add(book);
-            }
-        }
+//        List<Book> results = new ArrayList<>();
+//        for (Book book : availableBooks) { // Assume availableBooks is a List<Book> but there is an error and i need to fix it later
+//            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getAuthorFName().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getAuthorLName().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getIsbn().contains(keyword)) {
+//                results.add(book);
+//            }
+//        }
         return results;
     }
 
 
     //librarian own methods
     public boolean addBook(Book book, List<Book> books) {
-        for (Book b : books) {
-            if (b.getIsbn() == book.getIsbn()) {
-                System.out.println("Book with ID " + book.getBookId() + " already exists.");
-                return false; // Book already exists
-            }
-        }
-        books.add(book);
-        System.out.println("Book added successfully: " + book.getTitle());
-        return true;
+//        for (Book b : books) {
+//            if (b.getIsbn() == book.getIsbn()) {
+//                System.out.println("Book with ID " + book.getBookId() + " already exists.");
+//                return false; // Book already exists
+//            }
+//        }
+//        books.add(book);
+//        System.out.println("Book added successfully: " + book.getTitle());
+       return true;
     }
 
     public boolean issueBook(String bookId, User user, List<Book> books, List<BorrowedBookRecord> issuedBooks) {

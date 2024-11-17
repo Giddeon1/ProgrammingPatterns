@@ -39,6 +39,7 @@ public class Staff extends User {
 //        for (BorrowedBookRecord record : getOverdueRecords()) {
 //            overdueBooks.add(record.getBook());
 //        }
+        return null;
     }
 
     @Override
@@ -64,15 +65,16 @@ public class Staff extends User {
 
     @Override
     public List<Book> searchBook(String keyword) {
-        List<Book> results = new ArrayList<>();
-        for (Book book : availableBooks) { // Assume availableBooks is a List<Book> but there is an error and i need to fix it later
-            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getAuthorFName().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getAuthorLName().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getIsbn().contains(keyword)) {
-                results.add(book);
-            }
-        }
-        return results;
+//        List<Book> results = new ArrayList<>();
+//        for (Book book : availableBooks) { // Assume availableBooks is a List<Book> but there is an error and i need to fix it later
+//            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getAuthorFName().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getAuthorLName().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getIsbn().contains(keyword)) {
+//                results.add(book);
+//            }
+//        }
+//        return results;
+        return null;
     }
 }

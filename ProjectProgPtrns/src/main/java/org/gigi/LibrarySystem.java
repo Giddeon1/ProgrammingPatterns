@@ -6,13 +6,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibrarySystem {
-    private  List<Student> studentList = new ArrayList<>();
-    private List<Staff> staffList = new ArrayList<>();
-    private List<Book> bookList = new ArrayList<>();
-    private List<Librarian> librarianList = new ArrayList<>();
-    private List<BorrowedBookRecord> borrowedBookRecordList = new ArrayList<>();
+    private static LibrarySystem librarySystemInstance;
+    private  List<Student> studentList;
+    private List<Staff> staffList;
+    private List<Book> bookList;
+    private List<Librarian> librarianList;
+    private List<BorrowedBookRecord> borrowedBookRecordList;
 
+    private LibrarySystem() {
+        this.studentList =new ArrayList<>();
+        this.staffList = new ArrayList<>();
+        this.bookList = new ArrayList<>();
+        this.librarianList = new ArrayList<>();
+        this.borrowedBookRecordList = new ArrayList<>();
+    }
 
+    /**
+     * a global point of access to the singleton instance of the LibrarySystem class.
+     * @return The singleton instance of the LibrarySystem class.
+     */
+    public static LibrarySystem getInstance() {
+        if (librarySystemInstance == null) {
+            synchronized (LibrarySystem.class) {
+                if (librarySystemInstance == null) {
+                    librarySystemInstance = new LibrarySystem();
+                }
+            }
+        }
+        return librarySystemInstance;
+    }
 
     public  User login(int id, String password) {
         for (Student student : studentList) {
@@ -32,7 +54,6 @@ public class LibrarySystem {
         }
         return null;
     }
-
 
     public User signUp(String firstName, String lastName, String email, String type) {
         int newId = generateNewId(); // A method to generate a unique ID
@@ -61,7 +82,6 @@ public class LibrarySystem {
     private int generateNewId() {
         return (studentList.size() + staffList.size() + librarianList.size() + 1);
     }
-
     }
 
 

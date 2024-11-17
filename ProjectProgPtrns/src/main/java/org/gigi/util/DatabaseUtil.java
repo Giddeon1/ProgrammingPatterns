@@ -66,5 +66,4 @@ public class DatabaseUtil {
     }
 
     private DatabaseUtil(){}
-
 }

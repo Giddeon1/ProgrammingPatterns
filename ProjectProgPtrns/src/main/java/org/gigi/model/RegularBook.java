@@ -14,7 +14,6 @@ public class RegularBook extends Book {
         this.givenBooks = givenBooks;
     }
 
-
     public List<BorrowedBookRecord> getGivenBooks() {
         return givenBooks;
     }

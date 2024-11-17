@@ -18,8 +18,6 @@ public abstract class Book {
     protected int availableCopies;
     protected boolean isAvailable;
 
-
-
     public Book(String isbn, String title, String authorFName, String authorLName, int year, int totalCopies) {
         if (!isNameValid(authorFName, authorLName)) {
             throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
@@ -63,10 +61,6 @@ public abstract class Book {
     public void setAvailable(boolean available) {
         isAvailable = available;
     }
-
-
-
-
 
     /**
      * method that checks if the name is not valid(has numbers or special charcters)

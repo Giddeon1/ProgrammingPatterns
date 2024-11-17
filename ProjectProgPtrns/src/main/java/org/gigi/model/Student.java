@@ -8,7 +8,7 @@ public class Student extends User {
     private static int nextId = 1;
     private static final int MAX_BOOKS_ALLOWED = 3;
 
-    public Student(int id,String firstName, String lastName, String email) {
+    public Student(int id, String firstName, String lastName, String email) {
         super(nextId++, firstName, lastName, email, MAX_BOOKS_ALLOWED);
     }
 
@@ -38,8 +38,9 @@ public class Student extends User {
     public List<Book> getOverdueBooks() {
 //        List<Book> overdueBooks = new ArrayList<>();
 //        for (BorrowedBookRecord record : getOverdueRecords()) {
-//            overdueBooks.add(record.getBook());
+//          overdueBooks.add(record.getBook());
 //        }
+        return List.of();
     }
 
     @Override
@@ -65,16 +66,17 @@ public class Student extends User {
 
     @Override
     public List<Book> searchBook(String keyword) {
-        List<Book> results = new ArrayList<>();
-        for (Book book : availableBooks) { // Assume availableBooks is a List<Book> but there is an error and i need to fix it later
-            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getAuthorFName().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getAuthorLName().toLowerCase().contains(keyword.toLowerCase()) ||
-                    book.getIsbn().contains(keyword)) {
-                results.add(book);
-            }
-        }
-        return results;
+//        List<Book> results = new ArrayList<>();
+//        for (Book book : availableBooks) { // Assume availableBooks is a List<Book> but there is an error and i need to fix it later
+//            if (book.getTitle().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getAuthorFName().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getAuthorLName().toLowerCase().contains(keyword.toLowerCase()) ||
+//                    book.getIsbn().contains(keyword)) {
+//                results.add(book);
+//            }
+//        }
+//        return results;
+        return null;
     }
 }
-}
+

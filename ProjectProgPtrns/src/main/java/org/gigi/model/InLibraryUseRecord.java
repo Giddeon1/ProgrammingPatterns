@@ -6,6 +6,4 @@ public class InLibraryUseRecord {
     public InLibraryUseRecord(User user) {
         this.user = user;
     }
-
-
 }
