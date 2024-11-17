@@ -10,8 +10,4 @@ public class Student extends User {
         super(nextId++, firstName, lastName, email, MAX_BOOKS_ALLOWED);
     }
 
-
-
-
-
 }
