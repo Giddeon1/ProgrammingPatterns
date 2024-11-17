@@ -1,13 +1,14 @@
 package org.gigi;
 
-import org.gigi.model.Book;
-import org.gigi.model.Librarian;
-import org.gigi.model.User;
+import org.gigi.model.*;
 
 import java.util.List;
 
 public class LibrarySystem {
-    private List<User> users;
-    private List<Book> books;
-    private Librarian librarian;
+    private List<Student> studentList;
+    private List<Staff> staffList;
+    private List<Book> bookList;
+    private List<Librarian> librarianList;
+    private List<BorrowedBookRecord> borrowedBookRecordList;
+
 }
