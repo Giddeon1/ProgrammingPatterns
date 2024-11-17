@@ -13,9 +13,14 @@ public abstract class Book {
     protected String authorFName;
     protected String authorLName;
     protected int year;
-    protected int copies;
+    protected int totalCopies;
+    @Getter
+    protected int availableCopies;
+    protected boolean isAvailable;
 
-    public Book(String isbn, String title, String authorFName, String authorLName, int year, int copies) {
+
+
+    public Book(String isbn, String title, String authorFName, String authorLName, int year, int totalCopies) {
         if (!isNameValid(authorFName, authorLName)) {
             throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
         }
@@ -27,8 +32,41 @@ public abstract class Book {
         this.authorFName = authorFName;
         this.authorLName = authorLName;
         this.year = year;
-        this.copies = copies;
+        this.totalCopies = totalCopies;
+        this.availableCopies = totalCopies;
+        this.isAvailable = true;
+
     }
+
+    public void setAvailableCopies(int availableCopies) {
+        if (availableCopies <= totalCopies && availableCopies >= 0) {
+            this.availableCopies = availableCopies;
+        }
+    }
+
+    public void incrementAvailableCopies() {
+        if (availableCopies < totalCopies) {
+            availableCopies++;
+        }
+    }
+
+    public void decrementAvailableCopies() {
+        if (availableCopies > 0) {
+            availableCopies--;
+        }
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+
+
+
 
     /**
      * method that checks if the name is not valid(has numbers or special charcters)
@@ -50,3 +88,4 @@ public abstract class Book {
         return yearPublished <= LocalDate.now().getYear();
     }
 }
+

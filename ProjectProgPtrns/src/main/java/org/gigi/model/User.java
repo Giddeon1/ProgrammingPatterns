@@ -3,9 +3,7 @@ package org.gigi.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Getter
 @Setter
@@ -16,7 +14,7 @@ public abstract class User {
     protected String email;
     protected int maxBooksAllowed;
     protected int overDueBookCount;
-    protected List<Book> issuedBooks;
+    protected List<BorrowedBookRecord> issuedBooks;
 
     public User(int userId, String firstName, String lastName, String email,int maxBooksAllowed) {
         if (!isNameValid(firstName, lastName)) {
@@ -61,7 +59,7 @@ public abstract class User {
 
     public abstract String getDetails();
     public abstract List<Book> getOverdueBooks();
-    public abstract boolean borrowBook(Book book);
+    public abstract boolean canBorrowBook(Book book);
     public abstract boolean returnBook(Book book);
     public abstract List<Book> searchBook(String keyword);
 
