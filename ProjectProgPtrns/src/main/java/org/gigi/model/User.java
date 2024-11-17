@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Getter
 @Setter
@@ -57,5 +58,11 @@ public abstract class User {
         return email.matches(emailRegex);
     }
 
+
+    public abstract String getDetails();
+    public abstract List<Book> getOverdueBooks();
+    public abstract boolean borrowBook(Book book);
+    public abstract boolean returnBook(Book book);
+    public abstract List<Book> searchBook(String keyword);
 
 }
