@@ -3,8 +3,8 @@ package org.gigi.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Getter
 @Setter
@@ -17,7 +17,7 @@ public abstract class User {
     protected int overDueBookCount;
     protected List<Book> issuedBooks;
 
-    public User(int userId, String firstName, String lastName, String email, int maxBooksAllowed) {
+    public User(int userId, String firstName, String lastName, String email,int maxBooksAllowed) {
         if (!isNameValid(firstName, lastName)) {
             throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
         }
@@ -56,13 +56,6 @@ public abstract class User {
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(emailRegex);
     }
-
-    public abstract String getDetails();
-    public abstract List<Book> getOverdueBooks();
-    public abstract boolean borrowBook(Book book);
-    public abstract boolean returnBook(Book book);
-    public abstract boolean canBorrowMoreBooks();
-    public abstract List<Book> searchBook(String keyword);
 
 
 }
