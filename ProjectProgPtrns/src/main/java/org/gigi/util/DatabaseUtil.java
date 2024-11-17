@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseUtil {
+    /*Missing a lot of stuff in here but will implement after the submission of deliverable 2*/
 
     public static final String CREATE_STUDENT_TABLE_SQL =
             """
