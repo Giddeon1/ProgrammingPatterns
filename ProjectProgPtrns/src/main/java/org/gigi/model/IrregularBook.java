@@ -1,10 +1,12 @@
 package org.gigi.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 @Getter
+@Setter
 public class IrregularBook extends Book{
     private List<InLibraryUseRecord> givenBooks;
 
@@ -12,6 +14,5 @@ public class IrregularBook extends Book{
         super(isbn, title, authorFName, authorLName, year, copies);
         this.givenBooks = new ArrayList<>();
     }
-
 
 }

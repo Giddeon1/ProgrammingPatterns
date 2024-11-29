@@ -14,7 +14,6 @@ public abstract class Book {
     protected String authorLName;
     protected int year;
     protected int totalCopies;
-    @Getter
     protected int availableCopies;
     protected boolean isAvailable;
 
