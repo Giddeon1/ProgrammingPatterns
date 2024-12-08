@@ -12,10 +12,42 @@ public class DatabaseUtil {
     // inserting with plain value for all databases or some,
     // check book columns. do we need to put the total copies? it should increment (+1) once we add a book
     // query methods
-    private static final String DATABASE_URL = "jdbc:sqlite:src/main/resources/libraryDatabase/library.db";
+    private static final String DATABASE_URL = "jdbc:sqlite:database.db";
     private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static final ReentrantReadWriteLock.ReadLock READ_LOCK = LOCK.readLock();
     private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = LOCK.writeLock();
+
+
+    public static void DELETE_ALL_TABLES_SQL() {
+        String[] deleteTableSQLs = {
+                "DROP TABLE IF EXISTS students",
+                "DROP TABLE IF EXISTS staff",
+                "DROP TABLE IF EXISTS librarian",
+                "DROP TABLE IF EXISTS book"
+        };
+
+        for (String sql : deleteTableSQLs) {
+            deleteTable(sql);
+        }
+    }
+
+    /**
+     * Executes a SQL statement to delete a table.
+     * @param statementStr the SQL statement string to delete the table.
+     */
+    private static void deleteTable(String statementStr) {
+        WRITE_LOCK.lock();
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute(statementStr);
+            System.out.println("Deleted table: " + statementStr.split(" ")[2]); // Extracts the table name
+        } catch (SQLException e) {
+            System.err.println("Error deleting table: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            WRITE_LOCK.unlock();
+        }
+    }
 
     /**
      * establishes a connection to the sqlite database
@@ -84,7 +116,7 @@ public class DatabaseUtil {
         isbn TEXT PRIMARY KEY,
         title TEXT NOT NULL,
         author_first_name TEXT NOT NULL,
-        author_first_name TEXT NOT NULL,
+        author_last_name TEXT NOT NULL,
         year INTEGER NOT NULL,
         total_copies INTEGER NOT NULL
         )
@@ -188,6 +220,7 @@ public class DatabaseUtil {
              Statement statement = connection.createStatement()) {
             statement.execute(statementStr);
         } catch (SQLException e) {
+            System.err.println("Error creating table: " + e.getMessage());
             throw new RuntimeException(e);
         } finally {
             WRITE_LOCK.unlock();

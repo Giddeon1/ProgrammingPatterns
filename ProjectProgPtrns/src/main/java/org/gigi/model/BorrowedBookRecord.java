@@ -23,6 +23,7 @@ public class BorrowedBookRecord  {
         this.owner = owner;
         this.dueDate = LocalDate.now().plusWeeks(2);
         this.issueDate = LocalDate.now();
+        this.librarian = librarian;
     }
 
   /*
@@ -39,16 +40,16 @@ public class BorrowedBookRecord  {
         this.librarian = librarian;
     }*/
 
-    public BorrowedBookRecord(Book book, User owner) {
-        if (book == null || owner == null) {
-            throw new IllegalArgumentException("Book and owner cannot be null");
-        }
-        this.book = book;
-        this.owner = owner;
-        this.issueDate = LocalDate.now();
-        this.dueDate = issueDate.plusWeeks(2);
-        this.librarian = null;
-    }
+//    public BorrowedBookRecord(Book book, User owner) {
+//        if (book == null || owner == null) {
+//            throw new IllegalArgumentException("Book and owner cannot be null");
+//        }
+//        this.book = book;
+//        this.owner = owner;
+//        this.issueDate = LocalDate.now();
+//        this.dueDate = issueDate.plusWeeks(2);
+//        this.librarian = null;
+//    }
 
     public boolean isOverDue() {
         return LocalDate.now().isAfter(dueDate);

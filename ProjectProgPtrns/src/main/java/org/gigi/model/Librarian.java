@@ -74,22 +74,23 @@ public class Librarian extends User {
         }
     }
 
-    public boolean issueBook(String bookISBN, User user) {
-       List<Book> books = LibrarySystem.getInstance().getBooks();
-       List<BorrowedBookRecord> borrowedBookRecords = LibrarySystem.getInstance().getBorrowedBookRecords();
-
-       for (Book book : books) {
-           if (book.getIsbn().equals(bookISBN) && book.getAvailableCopies() > 0) {
-               book.decrementAvailableCopies();
-               BorrowedBookRecord record = new BorrowedBookRecord(book, user);
-               borrowedBookRecords.add(record);
-               System.out.println("Book issued successfully: " + book.getTitle());
-               return true;
-           }
-       }
-        System.out.println("Book with ISBN:" + bookISBN + " is either unavailable or does not exist");
-        return false;
-    }
+    //todo commented out caus eof borrowbook
+//    public boolean issueBook(String bookISBN, User user) {
+//       List<Book> books = LibrarySystem.getInstance().getBooks();
+//       List<BorrowedBookRecord> borrowedBookRecords = LibrarySystem.getInstance().getBorrowedBookRecords();
+//
+//       for (Book book : books) {
+//           if (book.getIsbn().equals(bookISBN) && book.getAvailableCopies() > 0) {
+//               book.decrementAvailableCopies();
+//               BorrowedBookRecord record = new BorrowedBookRecord(book, user);
+//               borrowedBookRecords.add(record);
+//               System.out.println("Book issued successfully: " + book.getTitle());
+//               return true;
+//           }
+//       }
+//        System.out.println("Book with ISBN:" + bookISBN + " is either unavailable or does not exist");
+//        return false;
+//    }
 
 
     public boolean returnBook(String bookISBN) {
