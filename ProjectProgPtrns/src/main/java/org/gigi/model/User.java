@@ -18,6 +18,8 @@ public abstract class User {
     protected int overDueBookCount;
     protected List<BorrowedBookRecord> issuedBooks;
 
+    private static int nextId = 1;
+
     public User(int userId, String firstName, String lastName, String email,int maxBooksAllowed) {
         if (!isNameValid(firstName, lastName)) {
             throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
@@ -67,7 +69,7 @@ public abstract class User {
     }
 
     public abstract String getDetails();
-    public abstract List<Book> getOverdueBooks();
+    public abstract List<BorrowedBookRecord> getOverdueRecords();
     public abstract boolean canBorrowBook(Book book);
     public abstract boolean returnBook(Book book);
     public abstract List<Book> searchBook(String keyword);
