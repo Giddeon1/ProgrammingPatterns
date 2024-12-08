@@ -1,14 +1,19 @@
 package org.gigi.model;
 
+
+import lombok.ToString;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 @Getter
 @Setter
-
 public class Student extends User {
     private String password;
 

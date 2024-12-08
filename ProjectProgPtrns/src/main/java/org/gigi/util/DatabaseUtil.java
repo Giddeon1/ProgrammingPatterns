@@ -9,8 +9,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DatabaseUtil {
     //todo:
-    // Change exception for some methods,
-    // java docs,
     // inserting with plain value for all databases or some,
     // check book columns. do we need to put the total copies? it should increment (+1) once we add a book
     // query methods
@@ -31,7 +29,10 @@ public class DatabaseUtil {
         }
     }
 
-    public static void createStudentTable() {
+    /**
+     * method to create the student table
+     */
+    public static void CREATE_STUDENT_TABLE_SQL() {
         String sql = """
             CREATE TABLE IF NOT EXISTS students (
                 id INTEGER PRIMARY KEY,
@@ -48,7 +49,10 @@ public class DatabaseUtil {
         }
     }
 
-    public static void createStaffTable() {
+    /**
+     * method to create the staff table
+     */
+    public static void CREATE_STAFF_TABLE_SQL() {
         String sql ="""
             CREATE TABLE IF NOT EXISTS staff (
                 id INTEGER PRIMARY KEY,
@@ -65,7 +69,10 @@ public class DatabaseUtil {
         }
     }
 
-    public static void createLibrarianTable() {
+    /**
+     * method to create the librarian table
+     */
+    public static void CREATE_LIBRARIAN_TABLE_SQL() {
         String sql = """
         CREATE TABLE IF NOT EXISTS librarian (
         id INTEGER PRIMARY KEY,
@@ -82,7 +89,11 @@ public class DatabaseUtil {
         }
     }
 
-    public static void createBookTable() {
+
+    /**
+     * method to create the book table
+     */
+    public static void CREATE_BOOK_TABLE_SQL() {
         String sql = """
         CREATE TABLE IF NOT EXISTS book (
         isbn TEXT PRIMARY KEY,
@@ -98,9 +109,13 @@ public class DatabaseUtil {
             statement.execute(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        };
+        }
     }
 
+    /**
+     * method to insert into the book database
+     * @param book the book object to be inserted into the database
+     */
     public static void insertIntoBookTable(Book book) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO book(isbn, title, author_first_name, author_last_name, year, total_copies) VALUES(?, ?, ?, ?, ?, ?)";
@@ -120,6 +135,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method to insert a librarian into the librarian database
+     * @param librarian the librarian object to be used
+     */
     public static void insertIntoLibrarianTable(Librarian librarian) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO librarian(id,first_name,last_name,email) VALUES(?,?,?,?)";
@@ -137,6 +156,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method to insert into the student database
+     * @param student the student object to be used
+     */
     public static void insertIntoStudentTable(Student student) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO student(id,first_name,last_name,email) VALUES(?,?,?,?)";
@@ -154,6 +177,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method to insert into the staff table
+     * @param staff the staff object to be used
+     */
     public static void insertIntoStaffTable(Staff staff) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO staff(id,first_name,last_name,email) VALUES(?,?,?,?)";
@@ -175,7 +202,7 @@ public class DatabaseUtil {
      * creates a database table using the provided SQL statement.
      * @param statementStr the SQL statement string to create the table.
      */
-   /* private static void createTable(String statementStr) {
+   private static void createTable(String statementStr) {
         WRITE_LOCK.lock();
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
@@ -185,6 +212,7 @@ public class DatabaseUtil {
         } finally {
             WRITE_LOCK.unlock();
         }
-    }*/
+    }
+    }
 
 }

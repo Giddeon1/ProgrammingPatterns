@@ -2,11 +2,13 @@ package org.gigi.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 @Getter
 @Setter
+@ToString
 public abstract class User {
     protected int userId;
     protected String firstName;
@@ -35,6 +37,14 @@ public abstract class User {
     }
 
     /**
+     * concatenate the first and last name of the user
+     * @return the user's first name and last name together
+     */
+    public String getFullName() {
+        return firstName+" "+lastName;
+    }
+
+    /**
      * method that checks if the name is not valid(has numbers or special charcters)
      * @param firstName the firstName of the User
      * @param lastName the last name of the User
@@ -57,7 +67,6 @@ public abstract class User {
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(emailRegex);
     }
-
 
     public abstract String getDetails();
     public abstract List<BorrowedBookRecord> getOverdueRecords();

@@ -11,9 +11,9 @@ import java.util.List;
 public class RegularBook extends Book {
     private List<BorrowedBookRecord> givenBooks;
 
-    public RegularBook(String isbn, String title, String authorFName, String authorLName, int year, int copies, List<BorrowedBookRecord> givenBooks) {
+    public RegularBook(String isbn, String title, String authorFName, String authorLName, int year, int copies) {
         super(isbn, title, authorFName, authorLName, year, copies);
-        this.givenBooks = givenBooks;
+        this.givenBooks = new ArrayList<>();
     }
 
 }

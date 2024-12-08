@@ -9,10 +9,12 @@ import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
-        LibrarySystemController librarySystemController = new LibrarySystemController();
-
-       /* Student s1 = new Student("John", "Doe","doe@gmail.com");
-
-        librarySystemController.addStudent();*/
+        RegularBook book = new RegularBook("1234","Kill Me","Gideon","Eleboda",2000,12);
+        Student me = new Student(1,"Gidoen","eleboda","deon@gmail.com");
+        Librarian lib1 = new Librarian(1,"itunu","eleboda","me@gmail.com");
+        BorrowedBookRecord borrowedBookRecord = new BorrowedBookRecord(book,me,lib1);
+        System.out.println(borrowedBookRecord.getOwner().getFirstName());
+        book.getGivenBooks().add(borrowedBookRecord);
+        System.out.println(book.getGivenBooks());
     }
 }
