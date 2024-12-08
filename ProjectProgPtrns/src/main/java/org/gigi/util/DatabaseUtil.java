@@ -12,7 +12,7 @@ public class DatabaseUtil {
     // inserting with plain value for all databases or some,
     // check book columns. do we need to put the total copies? it should increment (+1) once we add a book
     // query methods
-    private static final String DATABASE_URL = "jdbc:sqlite:./src/main/resources/libraryDatabase/library.db";
+    private static final String DATABASE_URL = "jdbc:sqlite:src/main/resources/libraryDatabase/library.db";
     private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static final ReentrantReadWriteLock.ReadLock READ_LOCK = LOCK.readLock();
     private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = LOCK.writeLock();
@@ -41,12 +41,7 @@ public class DatabaseUtil {
                 email TEXT NOT NULL
             )
             """;
-        try (Connection connection = getConnection();
-            Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        createTable(sql);
     }
 
     /**
@@ -61,12 +56,7 @@ public class DatabaseUtil {
                 email TEXT NOT NULL
             )
             """;
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        createTable(sql);
     }
 
     /**
@@ -81,12 +71,7 @@ public class DatabaseUtil {
         email TEXT NOT NULL
         )
         """;
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        createTable(sql);
     }
 
 
@@ -104,12 +89,7 @@ public class DatabaseUtil {
         total_copies INTEGER NOT NULL
         )
         """;
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        createTable(sql);
     }
 
     /**
@@ -212,7 +192,5 @@ public class DatabaseUtil {
         } finally {
             WRITE_LOCK.unlock();
         }
-    }
-    }
-
+   }
 }
