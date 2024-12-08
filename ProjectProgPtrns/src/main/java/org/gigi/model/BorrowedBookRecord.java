@@ -43,7 +43,7 @@ public class BorrowedBookRecord  {
         if (book == null || owner == null) {
             throw new IllegalArgumentException("Book and owner cannot be null");
         }
-        this.book = book;
+       // this.book = book;
         this.owner = owner;
         this.issueDate = LocalDate.now();
         this.dueDate = issueDate.plusWeeks(2);
