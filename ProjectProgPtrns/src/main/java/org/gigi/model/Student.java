@@ -1,9 +1,11 @@
 package org.gigi.model;
 
+import lombok.ToString;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@ToString
 public class Student extends User {
     private static int nextId = 1;
     private static final int MAX_BOOKS_ALLOWED = 3;

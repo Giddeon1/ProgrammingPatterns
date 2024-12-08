@@ -2,11 +2,13 @@ package org.gigi.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@ToString
 public abstract class Book {
     protected String isbn;
     protected String title;
@@ -14,7 +16,6 @@ public abstract class Book {
     protected String authorLName;
     protected int year;
     protected int totalCopies;
-    @Getter
     protected int availableCopies;
     protected boolean isAvailable;
 
@@ -33,7 +34,6 @@ public abstract class Book {
         this.totalCopies = totalCopies;
         this.availableCopies = totalCopies;
         this.isAvailable = true;
-
     }
 
     public void setAvailableCopies(int availableCopies) {

@@ -11,8 +11,6 @@ import java.util.function.Predicate;
 
 public class DatabaseUtil {
     //todo:
-    // Change exception for some methods,
-    // java docs,
     // inserting with plain value for all databases or some,
     // check book columns. do we need to put the total copies?
     // query methods
@@ -36,6 +34,9 @@ public class DatabaseUtil {
         return connection;
     }
 
+    /**
+     * method to create the student table
+     */
     public static void CREATE_STUDENT_TABLE_SQL() {
         String sql = """
             CREATE TABLE IF NOT EXISTS students (
@@ -48,6 +49,9 @@ public class DatabaseUtil {
         createTable(sql);
     }
 
+    /**
+     * method to create the staff table
+     */
     public static void CREATE_STAFF_TABLE_SQL() {
         String sql ="""
             CREATE TABLE IF NOT EXISTS staff (
@@ -60,6 +64,9 @@ public class DatabaseUtil {
         createTable(sql);
     }
 
+    /**
+     * method to create the librarian table
+     */
     public static void CREATE_LIBRARIAN_TABLE_SQL() {
         String sql = """
         CREATE TABLE IF NOT EXISTS librarian (
@@ -72,6 +79,9 @@ public class DatabaseUtil {
         createTable(sql);
     }
 
+    /**
+     * method to create the book table
+     */
     public static void CREATE_BOOK_TABLE_SQL() {
         String sql = """
         CREATE TABLE IF NOT EXISTS book (
@@ -86,6 +96,10 @@ public class DatabaseUtil {
         createTable(sql);
     }
 
+    /**
+     * method to insert into the book database
+     * @param book the book object to be inserted into the database
+     */
     public static void insertIntoBookTable(Book book) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO book(isbn, title, author_first_name, author_last_name, year, total_copies) VALUES(?, ?, ?, ?, ?, ?)";
@@ -105,6 +119,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method to insert a librarian into the librarian database
+     * @param librarian the librarian object to be used
+     */
     public static void insertIntoLibrarianTable(Librarian librarian) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO librarian(id,first_name,last_name,email) VALUES(?,?,?,?)";
@@ -122,6 +140,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method to insert into the student database
+     * @param student the student object to be used
+     */
     public static void insertIntoStudentTable(Student student) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO student(id,first_name,last_name,email) VALUES(?,?,?,?)";
@@ -139,6 +161,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method to insert into the staff table
+     * @param staff the staff object to be used
+     */
     public static void insertIntoStaffTable(Staff staff) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO staff(id,first_name,last_name,email) VALUES(?,?,?,?)";
@@ -171,5 +197,4 @@ public class DatabaseUtil {
             WRITE_LOCK.unlock();
         }
     }
-
 }
