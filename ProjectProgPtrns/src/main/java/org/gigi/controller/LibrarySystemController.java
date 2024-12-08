@@ -18,10 +18,10 @@ public class LibrarySystemController {
 
 
     private void initTables() {
-        DatabaseUtil.createStudentTable();
-        DatabaseUtil.createBookTable();
-        DatabaseUtil.createStaffTable();
-        DatabaseUtil.createLibrarianTable();
+        DatabaseUtil.CREATE_STUDENT_TABLE_SQL();
+        DatabaseUtil.CREATE_BOOK_TABLE_SQL();
+        DatabaseUtil.CREATE_STAFF_TABLE_SQL();
+        DatabaseUtil.CREATE_LIBRARIAN_TABLE_SQL();
     }
 
     public void addStudent(Student student) {
