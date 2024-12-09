@@ -15,7 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 public class Student extends User {
-    private String password;
 
     private static int nextId = 1;
     private static final int MAX_BOOKS_ALLOWED = 3;
@@ -24,9 +23,8 @@ public class Student extends User {
         super(nextId++, firstName, lastName, email,MAX_BOOKS_ALLOWED);
     }
 
-    public Student(String firstName, String lastName, String email, String password) {
-        super(nextId++, firstName, lastName, email,MAX_BOOKS_ALLOWED);
-        this.password =password;
+    public void borrowBook(String name) {
+
     }
 
 

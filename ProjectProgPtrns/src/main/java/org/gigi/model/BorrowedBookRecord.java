@@ -14,6 +14,7 @@ public class BorrowedBookRecord  {
     private RegularBook book;
     private LocalDate dueDate;
     private LocalDate issueDate;
+    private LocalDate returnDate;
     private User owner;
     private Librarian librarian;
 
@@ -24,6 +25,10 @@ public class BorrowedBookRecord  {
         this.dueDate = LocalDate.now().plusWeeks(2);
         this.issueDate = LocalDate.now();
         this.librarian = librarian;
+    }
+
+    public boolean isOverDue() {
+        return LocalDate.now().isAfter(dueDate); // Ensured consistency.
     }
 
   /*
@@ -50,14 +55,6 @@ public class BorrowedBookRecord  {
 //        this.dueDate = issueDate.plusWeeks(2);
 //        this.librarian = null;
 //    }
-
-    public boolean isOverDue() {
-        return LocalDate.now().isAfter(dueDate);
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
 
     @Override
     public String toString() {
