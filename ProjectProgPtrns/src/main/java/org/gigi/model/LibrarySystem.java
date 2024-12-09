@@ -54,8 +54,6 @@ public class LibrarySystem {
         switch (type.toLowerCase()) {
             case "student" :
                 return new Student(firstName, lastName, email);
-            case "staff" :
-                return new Staff(firstName, lastName, email);
             case "librarian" :
                 return new Librarian(firstName, lastName, email);
             default:
