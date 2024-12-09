@@ -24,12 +24,12 @@ public class LibrarySystemController {
         DatabaseUtil.CREATE_LIBRARIAN_TABLE_SQL();
     }
 
-    public void addStudent(Student student) {
-        threadPool.submit(()-> {
-            librarySystem.getStudents().add(student);
-            DatabaseUtil.insertIntoStudentTable(student);
-        });
-    }
+//    public void addStudent(Student student) {
+//        threadPool.submit(()-> {
+//            librarySystem.getStudents().add(student);
+//            DatabaseUtil.insertIntoStudentTable(student);
+//        });
+//    }
 
 
 
