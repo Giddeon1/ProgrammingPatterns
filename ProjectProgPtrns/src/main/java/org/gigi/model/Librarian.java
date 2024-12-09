@@ -25,6 +25,25 @@ public class Librarian extends User {
                 "\nEmail:" + email;
     }
 
+    @Override
+    public List<BorrowedBookRecord> getOverdueRecords() {
+        return List.of();
+    }
+
+    @Override
+    public boolean canBorrowBook(Book book) {
+        return false;
+    }
+
+    @Override
+    public boolean returnBook(Book book) {
+        return false;
+    }
+
+    @Override
+    public List<Book> searchBook(String keyword) {
+        return List.of();
+    }
 
 
 }
