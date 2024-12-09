@@ -13,63 +13,82 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 public class BorrowedBookRecord  {
-    private RegularBook book;
+    private final Book book;
+    private final User owner;
+    private final Librarian issuer;
+    private final LocalDate borrowDate;
     private LocalDate dueDate;
-    private LocalDate issueDate;
     private LocalDate returnDate;
-    private User owner;
-    private Librarian librarian;
 
 
-    public BorrowedBookRecord(RegularBook book,User owner,Librarian librarian) {
-        this.book = book;
-        this.owner = owner;
-        this.dueDate = LocalDate.now().plusWeeks(2);
-        this.issueDate = LocalDate.now();
-        this.librarian = librarian;
+    /**
+     * Constructor for BorrowedBookRecord with default borrowing period of 14 days.
+     */
+    public BorrowedBookRecord(Book book, User owner, Librarian issuer) {
+        this(book, owner, issuer, LocalDate.now().plusDays(14)); // Default 14-day period
     }
 
-    public boolean isOverDue() {
-        return LocalDate.now().isAfter(dueDate); // Ensured consistency.
-    }
-
-  /*
-    public BorrowedBookRecord(Book book, LocalDate dueDate, LocalDate issueDate, User owner, Librarian librarian) {
-        if (book == null || owner == null || librarian == null) {
-            throw new IllegalArgumentException("Book, owner, and librarian cannot be null.");
+    /**
+     * Constructor for BorrowedBookRecord with custom due date.
+     */
+    public BorrowedBookRecord(Book book, User owner, Librarian issuer, LocalDate dueDate) {
+        if (book == null || owner == null) {
+            throw new IllegalArgumentException("Book and owner cannot be null.");
         }
-
         this.book = book;
-        this.dueDate = dueDate;
-        this.issueDate = issueDate;
         this.owner = owner;
+        this.issuer = issuer;
+        this.borrowDate = LocalDate.now();
+        this.dueDate = dueDate;
+        this.returnDate = null;
+    }
 
-        this.librarian = librarian;
-    }*/
+    /**
+     * Marks the book as returned by setting the return date.
+     */
+    public void returnBook() {
+        if (this.returnDate != null) {
+            throw new IllegalStateException("This book has already been returned.");
+        }
+        this.returnDate = LocalDate.now();
+    }
 
-//    public BorrowedBookRecord(Book book, User owner) {
-//        if (book == null || owner == null) {
-//            throw new IllegalArgumentException("Book and owner cannot be null");
-//        }
-//        this.book = book;
-//        this.owner = owner;
-//        this.issueDate = LocalDate.now();
-//        this.dueDate = issueDate.plusWeeks(2);
-//        this.librarian = null;
-//    }
+    /**
+     * Extend the due date by a specified number of days.
+     * @param days Number of days to extend.
+     */
+    public void extendDueDate(int days) {
+        if (days <= 0) {
+            throw new IllegalArgumentException("Days to extend must be positive.");
+        }
+        this.dueDate = this.dueDate.plusDays(days);
+    }
+
+    /**
+     * Checks if the book is overdue.
+     * @return true if overdue, otherwise false.
+     */
+    public boolean isOverDue() {
+        return returnDate == null && LocalDate.now().isAfter(dueDate);
+    }
+
+    /**
+     * Calculates the number of days overdue, or 0 if not overdue.
+     * If the book is returned, calculates overdue days relative to the return date.
+     * @return number of days overdue.
+     */
+    public int daysOverDue() {
+        if (returnDate != null || !isOverDue()) {
+            return 0; // No overdue days if the book has been returned or is not overdue
+        }
+        return LocalDate.now().compareTo(dueDate);
+    }
 
     @Override
     public String toString() {
-        return "BorrowedBookRecord{" +
-                "book=" + book.getTitle() +
-                ", bookId=" + book.isbn +
-                ", issueDate=" + issueDate +
-                ", dueDate=" + dueDate +
-                ", ownerName=" + owner.getFullName() +
-                ", ownerId=" + owner.userId +
-                ", librarianName=" + librarian.getFullName() +
-                ", librarianId=" + librarian.userId +
-        '}';
+        return String.format("BorrowedBookRecord[Book: %s, Borrower: %s, Issuer: %s, Borrowed On: %s, Due Date: %s, Return Date: %s, Overdue: %b]",
+                book.getTitle(), owner.getFullName(), issuer != null ? issuer.getFullName() : "N/A",
+                borrowDate, dueDate, returnDate != null ? returnDate : "Not Returned", isOverDue());
     }
 
 }

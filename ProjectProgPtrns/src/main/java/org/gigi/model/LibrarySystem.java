@@ -21,6 +21,13 @@ public class LibrarySystem {
         this.borrowedBookRecords = new ArrayList<>();
     }
 
+    public BorrowedBookRecord findBorrowedRecord(User user, RegularBook book) {
+        return borrowedBookRecords.stream()
+                .filter(record -> record.getOwner().equals(user) && record.getBook().equals(book))
+                .findFirst()
+                .orElse(null);
+    }
+
     /**
      * a global point of access to the singleton instance of the LibrarySystem class.
      * @return The singleton instance of the LibrarySystem class.
@@ -36,19 +43,6 @@ public class LibrarySystem {
         return librarySystem;
     }
 
-//    public  User login(int id, String password) {
-//        for (Student student : students) {
-//            if (student.getUserId() == id && student.getPassword().equals(password)) { //check on this later
-//                return student;
-//            }
-//        }
-//        for (Staff staff : staffs) {
-//            if (staff.getUserId() == id && staff.getPassword().equals(password)) { //check on this later
-//                return staff;
-//            }
-//        }
-//        return null;
-//    }
 
 
     private User createUser(String type, int id, String firstName, String lastName, String email) {
@@ -63,19 +57,6 @@ public class LibrarySystem {
     }
 
 
-//    public User signUp(String firstName, String lastName, String email, String password, String type) {
-//        int newId = generateNewId(); // A method to generate a unique ID
-//        User newUser = createUser(type, newId, firstName, lastName, email);
-//
-//        if (newUser instanceof Student) {
-//            students.add((Student) newUser);
-//        } else if (newUser instanceof Staff) {
-//            staffs.add((Staff) newUser);
-//        } else if (newUser instanceof Librarian) {
-//            System.out.println("Librarian cannot sign up");
-//        }
-//        return newUser;
-//    }
 }
 
 
