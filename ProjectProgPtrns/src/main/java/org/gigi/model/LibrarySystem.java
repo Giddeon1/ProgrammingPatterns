@@ -12,6 +12,7 @@ public class LibrarySystem {
     private List<Book> books;
     private List<BorrowedBookRecord> borrowedBookRecords;
     private List<User> users;
+
     private static LibrarySystem librarySystem;
 
     private LibrarySystem() {
