@@ -1,7 +1,6 @@
 package org.gigi.util;
 import org.gigi.model.Book;
 import org.gigi.model.Librarian;
-import org.gigi.model.Staff;
 import org.gigi.model.Student;
 
 import java.sql.*;
@@ -189,26 +188,7 @@ public class DatabaseUtil {
         }
     }
 
-    /**
-     * method to insert into the staff table
-     * @param staff the staff object to be used
-     */
-    public static void insertIntoStaffTable(Staff staff) {
-        WRITE_LOCK.lock();
-        String sql = "INSERT INTO staff(id,first_name,last_name,email) VALUES(?,?,?,?)";
-        try(Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1,staff.getUserId());
-            preparedStatement.setString(2,staff.getFirstName());
-            preparedStatement.setString(3,staff.getLastName());
-            preparedStatement.setString(4,staff.getEmail());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            WRITE_LOCK.unlock();
-        }
-    }
+
 
     /**
      * creates a database table using the provided SQL statement.

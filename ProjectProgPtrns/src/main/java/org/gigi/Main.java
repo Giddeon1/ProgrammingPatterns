@@ -10,10 +10,6 @@ import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
-        RegularBook book = new RegularBook("1234","Kill Me","Gideon","Eleboda",2000,12);
-
-
-        LibrarySystemController librarySystemController = new LibrarySystemController();
 
     }
 }

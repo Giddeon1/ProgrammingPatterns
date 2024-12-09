@@ -1,5 +1,6 @@
 package org.gigi.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class BorrowedBookRecord  {
     private RegularBook book;
     private LocalDate dueDate;

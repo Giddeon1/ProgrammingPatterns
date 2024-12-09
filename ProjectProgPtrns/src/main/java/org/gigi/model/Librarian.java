@@ -13,37 +13,13 @@ public class Librarian extends User {
     //private static final int MAX_BOOKS_ALLOWED = 5;
 
     public Librarian (String firstName, String lastName, String email) {
-        super(nextId++, firstName, lastName, email, 0);
+        super(firstName, lastName, email, 0);
     }
 
     @Override
     public String getDetails() {
-        return "Librarian details:" +
-                "\nId: " + this.userId +
-                "\nFirst Name: " + firstName +
-                "\nLast Name: " + lastName +
-                "\nEmail:" + email;
+        return String.format(
+                "Librarian Details:%nId: %d%nFirst Name: %s%nLast Name: %s%nEmail: %s",
+                userId, firstName, lastName, email);
     }
-
-    @Override
-    public List<BorrowedBookRecord> getOverdueRecords() {
-        return List.of();
-    }
-
-    @Override
-    public boolean canBorrowBook(Book book) {
-        return false;
-    }
-
-    @Override
-    public boolean returnBook(Book book) {
-        return false;
-    }
-
-    @Override
-    public List<Book> searchBook(String keyword) {
-        return List.of();
-    }
-
-
 }

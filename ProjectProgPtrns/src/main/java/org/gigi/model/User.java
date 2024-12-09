@@ -15,25 +15,63 @@ public abstract class User {
     protected String lastName;
     protected String email;
     protected int maxBooksAllowed;
-    protected int overDueBookCount;
     protected List<BorrowedBookRecord> issuedBooks;
 
     private static int nextId = 1;
 
-    public User(int userId, String firstName, String lastName, String email,int maxBooksAllowed) {
+    public User(String firstName, String lastName, String email,int maxBooksAllowed) {
         if (!isNameValid(firstName, lastName)) {
             throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
         }
         if (!isEmailValid(email)) {
             throw new IllegalArgumentException("Invalid email");
         }
-        this.userId = userId;
+        this.userId = generateNextId();
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.maxBooksAllowed = maxBooksAllowed;
-        this.overDueBookCount = 0;
         this.issuedBooks = new ArrayList<>();
+    }
+
+    /**
+     * method that gives a list of overdue records
+     * @return a list of overdue book records
+     */
+    public List<BorrowedBookRecord> getOverdueRecords() {
+        List<BorrowedBookRecord> overdueRecords = new ArrayList<>();
+        for (BorrowedBookRecord record : issuedBooks) {
+            if (record.isOverDue()) {
+                overdueRecords.add(record);
+            }
+        }
+        return overdueRecords;
+    }
+
+    /**
+     * add a borrowed book record for the user
+     * @param record the record to be added
+     */
+    public void borrowBook(BorrowedBookRecord record) {
+        if (issuedBooks.size() >= maxBooksAllowed) {
+            throw new IllegalStateException("Maximum books allowed reached. Cannot borrow more books.");
+        }
+        issuedBooks.add(record);
+    }
+
+    /**
+     * remove a borrowed book record for the user
+     * @param record the record to be removed
+     */
+    public void returnBook(BorrowedBookRecord record) {
+        issuedBooks.remove(record);
+    }
+
+    /**
+     * Static method to generate the next unique user ID.
+     */
+    private static synchronized int generateNextId() {
+        return nextId++;
     }
 
     /**
@@ -69,9 +107,5 @@ public abstract class User {
     }
 
     public abstract String getDetails();
-    public abstract List<BorrowedBookRecord> getOverdueRecords();
-    public abstract boolean canBorrowBook(Book book);
-    public abstract boolean returnBook(Book book);
-    public abstract List<Book> searchBook(String keyword);
 
 }
