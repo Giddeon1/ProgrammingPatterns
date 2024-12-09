@@ -39,9 +39,10 @@ public class Librarian extends User {
         librarySystem.getBooks().remove(book);
     }
 
+
     /**
      * Facilitates borrowing a book for a user.
-     * @param librarySystem The library system managing borrowing.
+     * @param librarySystem The library system.
      * @param user The user borrowing the book.
      * @param book The book being borrowed.
      */
@@ -54,5 +55,21 @@ public class Librarian extends User {
         } else {
             throw new IllegalStateException("No copies of the book are available.");
         }
+    }
+
+    /**
+     * Facilitates returning a book for a user.
+     * @param librarySystem The library system.
+     * @param user The user returning the book.
+     * @param book The book being returned.
+     */
+    public void facilitateReturning(LibrarySystem librarySystem, User user, RegularBook book) {
+        BorrowedBookRecord record = librarySystem.findBorrowedRecord(user, book);
+        if (record == null) {
+            throw new IllegalArgumentException("No borrowed record found for this book and user.");
+        }
+        user.returnBook(record);
+        record.returnBook();
+        book.incrementAvailableCopies();
     }
 }
