@@ -36,12 +36,6 @@ public abstract class Book {
         this.isAvailable = true;
     }
 
-    public void setAvailableCopies(int availableCopies) {
-        if (availableCopies <= totalCopies && availableCopies >= 0) {
-            this.availableCopies = availableCopies;
-        }
-    }
-
     public void incrementAvailableCopies() {
         if (availableCopies < totalCopies) {
             availableCopies++;
@@ -54,13 +48,6 @@ public abstract class Book {
         }
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
 
     /**
      * method that checks if the name is not valid(has numbers or special charcters)

@@ -11,19 +11,13 @@ import java.util.List;
 public class LibrarySystem {
     private List<Book> books;
     private List<BorrowedBookRecord> borrowedBookRecords;
-    private List<Librarian> librarian;
-    private  List<Student> students;
-    private List<Staff> staffs;
-
+    private List<User> users;
 
     private static LibrarySystem librarySystem;
-    private static int idCounter = 1;
 
     private LibrarySystem() {
-        this.students = new ArrayList<>();
-        this.staffs = new ArrayList<>();
+        this.users = new ArrayList<>();
         this.books = new ArrayList<>();
-        this.librarian = new ArrayList<>();
         this.borrowedBookRecords = new ArrayList<>();
     }
 
@@ -42,19 +36,19 @@ public class LibrarySystem {
         return librarySystem;
     }
 
-    public  User login(int id, String password) {
-        for (Student student : students) {
-            if (student.getUserId() == id && student.getPassword().equals(password)) { //check on this later
-                return student;
-            }
-        }
-        for (Staff staff : staffs) {
-            if (staff.getUserId() == id && staff.getPassword().equals(password)) { //check on this later
-                return staff;
-            }
-        }
-        return null;
-    }
+//    public  User login(int id, String password) {
+//        for (Student student : students) {
+//            if (student.getUserId() == id && student.getPassword().equals(password)) { //check on this later
+//                return student;
+//            }
+//        }
+//        for (Staff staff : staffs) {
+//            if (staff.getUserId() == id && staff.getPassword().equals(password)) { //check on this later
+//                return staff;
+//            }
+//        }
+//        return null;
+//    }
 
 
     private User createUser(String type, int id, String firstName, String lastName, String email) {
@@ -71,24 +65,19 @@ public class LibrarySystem {
     }
 
 
-    public User signUp(String firstName, String lastName, String email, String password, String type) {
-        int newId = generateNewId(); // A method to generate a unique ID
-        User newUser = createUser(type, newId, firstName, lastName, email);
-
-        if (newUser instanceof Student) {
-            students.add((Student) newUser);
-        } else if (newUser instanceof Staff) {
-            staffs.add((Staff) newUser);
-        } else if (newUser instanceof Librarian) {
-            System.out.println("Librarian cannot sign up");
-        }
-        return newUser;
-    }
-
-    private int generateNewId() {
-        return idCounter++;
-    }
-
-    }
+//    public User signUp(String firstName, String lastName, String email, String password, String type) {
+//        int newId = generateNewId(); // A method to generate a unique ID
+//        User newUser = createUser(type, newId, firstName, lastName, email);
+//
+//        if (newUser instanceof Student) {
+//            students.add((Student) newUser);
+//        } else if (newUser instanceof Staff) {
+//            staffs.add((Staff) newUser);
+//        } else if (newUser instanceof Librarian) {
+//            System.out.println("Librarian cannot sign up");
+//        }
+//        return newUser;
+//    }
+}
 
 
