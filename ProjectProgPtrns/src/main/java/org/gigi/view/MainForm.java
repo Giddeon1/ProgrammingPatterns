@@ -97,8 +97,8 @@ public class MainForm extends JFrame {
             new LibrarianForm(this);
             this.dispose();
         } else if ("Student".equals(selectedRole)) {
-            // Add logic for Student redirection if needed
-            JOptionPane.showMessageDialog(this, "Student role selected. Redirection not implemented yet.");
+            new StudentForm();
+            this.dispose();
         } else {
             System.out.println("No valid role selected.");
         }
