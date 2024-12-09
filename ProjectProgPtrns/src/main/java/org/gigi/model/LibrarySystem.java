@@ -2,6 +2,7 @@ package org.gigi.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.gigi.util.DatabaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,8 @@ public class LibrarySystem {
 
     private LibrarySystem() {
         this.users = new ArrayList<>();
-        this.books = new ArrayList<>();
-        this.borrowedBookRecords = new ArrayList<>();
+        this.books = DatabaseUtil.fetchAllBooks();
+        this.borrowedBookRecords = DatabaseUtil.fetchAllBorrowedBookRecords();
     }
 
     public BorrowedBookRecord findBorrowedRecord(User user, RegularBook book) {
