@@ -16,7 +16,7 @@ public class BorrowedBookRecord  {
     private final Book book;
     private final User owner;
     private final Librarian issuer;
-    private final LocalDate borrowDate;
+    private LocalDate borrowDate;
     private LocalDate dueDate;
     private LocalDate returnDate;
 

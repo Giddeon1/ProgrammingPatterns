@@ -48,11 +48,6 @@ public abstract class Book {
         }
     }
 
-    // todo
-    public boolean isAvailable() {
-        return true;
-    }
-
 
     /**
      * method that checks if the name is not valid(has numbers or special charcters)
