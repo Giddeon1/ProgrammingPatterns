@@ -113,6 +113,8 @@ public class StudentForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 hideDynamicComponents();
+                new MainForm();
+                dispose();
             }
         });
 
