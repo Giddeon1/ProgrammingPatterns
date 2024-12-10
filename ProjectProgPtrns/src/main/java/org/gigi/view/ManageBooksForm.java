@@ -1,10 +1,15 @@
 package org.gigi.view;
 
+import org.gigi.model.Book;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 public class ManageBooksForm extends JFrame {
+    private List<String> books;
     private JButton searchBookButton;
     private JButton deleteButton;
     private JButton addBookButton;
@@ -29,6 +34,7 @@ public class ManageBooksForm extends JFrame {
     private JLabel availabilityLabel;
     private JTextField authorTextField;
     private JLabel authorLabel;
+    private JTextField bookIDTextField;
 
     public ManageBooksForm() {
         setTitle("Manage Books - Library Management System");
@@ -46,7 +52,7 @@ public class ManageBooksForm extends JFrame {
         addingBookButton = new JButton("Add Book");
 
         // Initialize Labels
-        formLabel = new JLabel("Add Book Form");
+        formLabel = new JLabel("Please Fill in the Form Below");
         titleBookLabel = new JLabel("Title:");
         authorLabel = new JLabel("Author:");
         genreLabel = new JLabel("Genre:");
@@ -54,6 +60,7 @@ public class ManageBooksForm extends JFrame {
         isbnLabel = new JLabel("ISBN:");
         copiesAvailableLabel = new JLabel("Copies Available:");
         availabilityLabel = new JLabel("Availability:");
+        bookIdLabel = new JLabel("Book ID:");
 
         // Initialize TextFields
         bookTextField = new JTextField(20);
@@ -63,6 +70,7 @@ public class ManageBooksForm extends JFrame {
         isbnTextField = new JTextField(20);
         copiesTextField = new JTextField(20);
         availabilityTextField = new JTextField(20);
+        bookIDTextField = new JTextField(20);
 
         // Set Bounds for Buttons
         searchBookButton.setBounds(20, 20, 150, 30);
@@ -71,6 +79,7 @@ public class ManageBooksForm extends JFrame {
         goBackButton.setBounds(20, 140, 150, 30);
         exitButton.setBounds(20, 180, 150, 30);
         addingBookButton.setBounds(200, 350, 150, 30);
+        deleteBookButton.setBounds(200, 140, 150, 30);
 
         // Set Bounds for Form Components
         formLabel.setBounds(200, 20, 200, 30);
@@ -88,6 +97,8 @@ public class ManageBooksForm extends JFrame {
         copiesTextField.setBounds(350, 260, 200, 30);
         availabilityLabel.setBounds(200, 300, 150, 30);
         availabilityTextField.setBounds(350, 300, 200, 30);
+        bookIdLabel.setBounds(200, 60, 150, 30);
+        bookIDTextField.setBounds(350, 60, 200, 30);
 
         // Add Static Buttons
         add(searchBookButton);
@@ -95,6 +106,14 @@ public class ManageBooksForm extends JFrame {
         add(deleteButton);
         add(goBackButton);
         add(exitButton);
+
+
+        searchBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showSearchBookUI();
+            }
+        });
 
         // Add Action Listeners
         addBookButton.addActionListener(new ActionListener() {
@@ -127,8 +146,52 @@ public class ManageBooksForm extends JFrame {
             }
         });
 
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showDeleteBookUI();
+            }
+        });
+
+        deleteBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteBook();
+            }
+        });
+
         setVisible(true);
     }
+
+    private void showSearchBookUI() {
+        if (books.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Create a new frame to display the books
+            JFrame bookListFrame = new JFrame("List of Books");
+            bookListFrame.setSize(800, 400);
+            bookListFrame.setLocationRelativeTo(null);
+
+            // Create column headers for the table
+            String[] columnNames = {"Title", "Author", "Genre", "Year Published", "ISBN", "Copies", "Availability"};
+
+            // Convert the book list to a 2D array for JTable
+            String[][] bookData = books.toArray(new String[0][0]);
+
+            // Create a JTable with book data
+            JTable bookTable = new JTable(bookData, columnNames);
+            bookTable.setEnabled(false); // Disable editing
+
+            // Add the table to a JScrollPane for better usability
+            JScrollPane scrollPane = new JScrollPane(bookTable);
+            bookListFrame.add(scrollPane);
+
+            bookListFrame.setVisible(true);
+        }
+    }
+
+
 
     private void showAddBookUI() {
         // Add dynamic components for the "Add Book" form
@@ -148,6 +211,8 @@ public class ManageBooksForm extends JFrame {
         add(availabilityLabel);
         add(availabilityTextField);
         add(addingBookButton);
+        remove(deleteBookButton);
+        remove(bookIdLabel);
 
         revalidate();
         repaint();
@@ -164,6 +229,73 @@ public class ManageBooksForm extends JFrame {
         String availability = availabilityTextField.getText();
 
         JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);
+
+        if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || copies.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Add book to the list
+        books.add(Arrays.toString(new String[]{title, author, genre, year, isbn, copies, availability}));
+        JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);
+
+        bookTextField.setText("");
+        authorTextField.setText("");
+        genreTextField.setText("");
+        yearsPublishedTextField.setText("");
+        isbnTextField.setText("");
+        copiesTextField.setText("");
+        availabilityTextField.setText("");
+    }
+
+    private void showDeleteBookUI() {
+        // Remove all dynamically added components first
+        removeDynamicComponents();
+
+        // Add components specific to "Delete Book"
+        add(formLabel);
+        add(bookIdLabel);
+        add(bookIDTextField);
+        add(deleteBookButton);
+
+        revalidate();
+        repaint();
+    }
+
+    private void removeDynamicComponents() {
+        // Remove components for both Add and Delete book functionality
+        remove(formLabel);
+        remove(bookIdLabel);
+        remove(bookIDTextField);
+        remove(deleteBookButton);
+        // Remove Add Book components (in case they are present)
+        remove(titleBookLabel);
+        remove(bookTextField);
+        remove(authorLabel);
+        remove(authorTextField);
+        remove(genreLabel);
+        remove(genreTextField);
+        remove(yearsPublishedLabel);
+        remove(yearsPublishedTextField);
+        remove(isbnLabel);
+        remove(isbnTextField);
+        remove(copiesAvailableLabel);
+        remove(copiesTextField);
+        remove(availabilityLabel);
+        remove(availabilityTextField);
+        remove(addingBookButton);
+    }
+
+    private void deleteBook() {
+        String bookID = bookIDTextField.getText();
+
+        // Check if the input is a valid numeric ID
+        if (bookID.isEmpty() || !bookID.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid numeric Book ID.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Book with ID " + bookID + " removed successfully.", "Delete Book", JOptionPane.INFORMATION_MESSAGE);
+            bookIDTextField.setText(""); // Clear the text field after deletion
+        }
     }
 
     public static void main(String[] args) {
