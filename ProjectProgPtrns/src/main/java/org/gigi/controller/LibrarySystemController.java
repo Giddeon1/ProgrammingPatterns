@@ -21,6 +21,7 @@ public class LibrarySystemController {
         DatabaseUtil.CREATE_BOOK_TABLE_SQL();
         DatabaseUtil.CREATE_LIBRARIAN_TABLE_SQL();
         DatabaseUtil.CREATE_BORROWED_BOOK_TABLE_SQL();
+        
     }
 
     public void addBook(Book book) {
