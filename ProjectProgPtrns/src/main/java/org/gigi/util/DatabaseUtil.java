@@ -22,7 +22,9 @@ public class DatabaseUtil {
         String[] deleteTableSQLs = {
                 "DROP TABLE IF EXISTS students",
                 "DROP TABLE IF EXISTS librarians",
+                "DROP TABLE IF EXISTS librarian",
                 "DROP TABLE IF EXISTS books",
+                "DROP TABLE IF EXISTS book",
                 "DROP TABLE IF EXISTS borrowed_books"
         };
 
@@ -259,6 +261,7 @@ public class DatabaseUtil {
                  ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     users.add(new Student(
+                            resultSet.getInt("id"),
                             resultSet.getString("first_name"),
                             resultSet.getString("last_name"),
                             resultSet.getString("email")
@@ -273,6 +276,7 @@ public class DatabaseUtil {
                  ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     users.add(new Librarian(
+                            resultSet.getInt("id"),
                             resultSet.getString("first_name"),
                             resultSet.getString("last_name"),
                             resultSet.getString("email")
@@ -365,6 +369,7 @@ public class DatabaseUtil {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return new Student(
+                        resultSet.getInt("id"),
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name"),
                         resultSet.getString("email")
@@ -387,6 +392,7 @@ public class DatabaseUtil {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return new Librarian(
+                        resultSet.getInt("id"), // Pass the ID from the database
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name"),
                         resultSet.getString("email")
@@ -397,7 +403,7 @@ public class DatabaseUtil {
         } finally {
             READ_LOCK.unlock();
         }
-        return null; // Return null if no librarian is found with the given ID
+        return null;
     }
 
 
