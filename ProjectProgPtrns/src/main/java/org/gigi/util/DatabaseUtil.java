@@ -248,23 +248,30 @@ public class DatabaseUtil {
         }
     }
 
-    /*
     public static List<User> fetchAllUsers() {
         READ_LOCK.lock();
-        String sql = "SELECT * FROM users";
         List<User> users = new ArrayList<>();
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                String role = resultSet.getString("role"); // WE NEED A ROLE???
-                if ("Student".equalsIgnoreCase(role)) {
+        try {
+            // Fetch all students
+            String studentSql = "SELECT * FROM students";
+            try (Connection connection = getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(studentSql);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
                     users.add(new Student(
                             resultSet.getString("first_name"),
                             resultSet.getString("last_name"),
                             resultSet.getString("email")
                     ));
-                } else if ("Librarian".equalsIgnoreCase(role)) {
+                }
+            }
+
+            // Fetch all librarians
+            String librarianSql = "SELECT * FROM librarians";
+            try (Connection connection = getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(librarianSql);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
                     users.add(new Librarian(
                             resultSet.getString("first_name"),
                             resultSet.getString("last_name"),
@@ -278,7 +285,11 @@ public class DatabaseUtil {
             READ_LOCK.unlock();
         }
         return users;
-    }*/
+    }
+
+
+
+
 
     public static List<Book> fetchAllBooks() {
         READ_LOCK.lock();

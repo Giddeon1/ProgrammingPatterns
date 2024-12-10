@@ -17,7 +17,7 @@ public class LibrarySystem {
     private static LibrarySystem librarySystem;
 
     private LibrarySystem() {
-        this.users = new ArrayList<>();
+        this.users = DatabaseUtil.fetchAllUsers();
         this.books = DatabaseUtil.fetchAllBooks();
         this.borrowedBookRecords = DatabaseUtil.fetchAllBorrowedBookRecords();
     }
