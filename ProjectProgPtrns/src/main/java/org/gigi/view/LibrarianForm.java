@@ -10,7 +10,7 @@ public class LibrarianForm extends JFrame {
     private JButton manageUsersButton;
     private JButton returnToLoginButton;
 
-    public LibrarianForm(JFrame parent) {
+    public LibrarianForm() {
         setTitle("Librarian - Library Management System");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(500,300);
@@ -32,7 +32,7 @@ public class LibrarianForm extends JFrame {
         returnToLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parent.setVisible(true); // Show the MainForm
+                setVisible(true); // Show the MainForm
                 dispose(); // Close the current form
             }
         });
