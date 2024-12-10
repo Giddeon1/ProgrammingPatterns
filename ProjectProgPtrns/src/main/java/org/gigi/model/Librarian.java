@@ -15,6 +15,10 @@ public class Librarian extends User {
         super(firstName, lastName, email, 0);
     }
 
+    public Librarian (int userId, String firstName, String lastName, String email) {
+        super(userId,firstName, lastName, email, 0);
+    }
+
     @Override
     public String getDetails() {
         return String.format(

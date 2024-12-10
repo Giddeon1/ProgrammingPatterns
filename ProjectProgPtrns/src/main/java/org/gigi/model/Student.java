@@ -20,6 +20,10 @@ public class Student extends User {
         super(firstName, lastName, email, MAX_BOOKS_ALLOWED);
     }
 
+    public Student(int userId, String firstName, String lastName, String email) {
+        super(userId, firstName, lastName, email, MAX_BOOKS_ALLOWED);
+    }
+
     @Override
     public String getDetails() {
         return String.format(

@@ -6,6 +6,8 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @Getter
 @Setter
 @ToString
@@ -27,6 +29,21 @@ public abstract class User {
             throw new IllegalArgumentException("Invalid email");
         }
         this.userId = generateNextId();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.maxBooksAllowed = maxBooksAllowed;
+        this.issuedBooks = new ArrayList<>();
+    }
+
+    public User(int userId,String firstName, String lastName, String email,int maxBooksAllowed) {
+        if (!isNameValid(firstName, lastName)) {
+            throw new IllegalArgumentException("Invalid name: Names must contain only letters and spaces.");
+        }
+        if (!isEmailValid(email)) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -108,4 +125,16 @@ public abstract class User {
 
     public abstract String getDetails();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId && maxBooksAllowed == user.maxBooksAllowed && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(issuedBooks, user.issuedBooks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, firstName, lastName, email, maxBooksAllowed, issuedBooks);
+    }
 }
