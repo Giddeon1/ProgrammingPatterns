@@ -27,7 +27,7 @@ public class Student extends User {
     @Override
     public String getDetails() {
         return String.format(
-                "Student Details:\nId: %d\nName: %s\nEmail: %s\nOverdue Books: %d\nIssued Books: %d",
+                "Student Details:\nId: %d\nName: %s\nEmail: %s\nOverdue Books: %d\nIssued Books: %d\n",
                 userId, getFullName(), email, getOverdueRecords().size(), issuedBooks.size()
         );
     }

@@ -22,7 +22,7 @@ public class Librarian extends User {
     @Override
     public String getDetails() {
         return String.format(
-                "Librarian Details:%nId: %d%nFirst Name: %s%nLast Name: %s%nEmail: %s",
+                "Librarian Details:%nId: %d%nFirst Name: %s%nLast Name: %s%nEmail: %s\n",
                 userId, firstName, lastName, email);
     }
 
