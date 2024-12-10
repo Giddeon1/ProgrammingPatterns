@@ -94,7 +94,7 @@ public class MainForm extends JFrame {
         String selectedRole = (String) userComboBox.getSelectedItem();
         // Do something with the selected role, e.g., update the UI or perform logic
         if ("Librarian".equals(selectedRole)) {
-            new LibrarianForm(this);
+            new LibrarianForm();
             this.dispose();
         } else if ("Student".equals(selectedRole)) {
             new StudentForm();
