@@ -38,7 +38,7 @@ public class MainForm extends JFrame {
 
         validateButton = new JButton("Validate");
 
-        userComboBox = new JComboBox<>(new String[] {"Librarian", "Student"});
+        userComboBox = new JComboBox<>(new String[] {"Type of Customer","Librarian", "Student"});
 
         // Set layout manager
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

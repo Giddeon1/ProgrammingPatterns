@@ -32,11 +32,34 @@ public class LibrarianForm extends JFrame {
         returnToLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(true); // Show the MainForm
                 dispose(); // Close the current form
+                new MainForm();
+            }
+        });
+
+        manageBookButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Show the MainForm
+                dispose(); // Close the current form
+                new ManageBooksForm();
+            }
+        });
+
+        manageUsersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Show the MainForm
+                dispose(); // Close the current form
+                new ManageUsersForm();
             }
         });
 
         setVisible(true);
     }
+
+    public static void main(String[] args) {
+        new LibrarianForm();
+    }
 }
+
