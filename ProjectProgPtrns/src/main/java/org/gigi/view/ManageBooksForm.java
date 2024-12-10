@@ -1,10 +1,13 @@
 package org.gigi.view;
 
 import org.gigi.model.Book;
+import org.gigi.model.RegularBook;
+import org.gigi.util.DatabaseUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -164,7 +167,7 @@ public class ManageBooksForm extends JFrame {
         setVisible(true);
     }
 
-    private void showSearchBookUI() {
+   /* private void showSearchBookUI() {
         if (books.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -189,13 +192,55 @@ public class ManageBooksForm extends JFrame {
 
             bookListFrame.setVisible(true);
         }
+    }*/
+
+    private void showSearchBookUI() {
+        List<Book> bookList = DatabaseUtil.fetchAllBooks();
+        if (bookList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Create column headers for the table
+        String[] columnNames = {"ID", "Title", "Author", "Genre", "Year Published", "ISBN", "Copies Available", "Availability"};
+
+        // Convert the book list to a 2D array for JTable
+        String[][] bookData = new String[bookList.size()][columnNames.length];
+        for (int i = 0; i < bookList.size(); i++) {
+            Book book = bookList.get(i);
+            bookData[i][0] = String.valueOf(book.getIsbn());
+            bookData[i][1] = book.getTitle();
+            bookData[i][2] = book.getAuthorFName();
+            bookData[i][3] = book.getAuthorLName(); //can you make this into genre?
+            bookData[i][4] = String.valueOf(book.getYear());
+            bookData[i][5] = book.getIsbn();
+            bookData[i][6] = String.valueOf(book.getAvailableCopies());
+            bookData[i][7] = book.isAvailable() ? "Available" : "Not Available";
+        }
+
+        // Create a JTable with book data
+        JTable bookTable = new JTable(bookData, columnNames);
+        bookTable.setEnabled(false); // Disable editing
+
+        // Add the table to a JScrollPane for better usability
+        JScrollPane scrollPane = new JScrollPane(bookTable);
+
+        // Create a new frame to display the books
+        JFrame bookListFrame = new JFrame("List of Books");
+        bookListFrame.setSize(800, 400);
+        bookListFrame.setLocationRelativeTo(null);
+        bookListFrame.add(scrollPane);
+        bookListFrame.setVisible(true);
+
     }
+
+
 
 
 
     private void showAddBookUI() {
         // Add dynamic components for the "Add Book" form
-        add(formLabel);
+       add(formLabel);
         add(titleBookLabel);
         add(bookTextField);
         add(authorLabel);
@@ -223,29 +268,52 @@ public class ManageBooksForm extends JFrame {
         String title = bookTextField.getText();
         String author = authorTextField.getText();
         String genre = genreTextField.getText();
-        String year = yearsPublishedTextField.getText();
+        String yearStr = yearsPublishedTextField.getText();
         String isbn = isbnTextField.getText();
-        String copies = copiesTextField.getText();
-        String availability = availabilityTextField.getText();
+        String copiesStr = copiesTextField.getText();
+        String availabilityStr = availabilityTextField.getText();
 
         JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);
 
-        if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || copies.isEmpty()) {
+        if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || yearStr.isEmpty() || copiesStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Add book to the list
-        books.add(Arrays.toString(new String[]{title, author, genre, year, isbn, copies, availability}));
-        JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);
+       /* books.add(Arrays.toString(new String[]{title, author, genre, year, isbn, copies, availability}));
+        JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);*/
+        try {
+            int year = Integer.parseInt(yearStr);
+            int copies = Integer.parseInt(copiesStr);
+            boolean availability = availabilityStr.equalsIgnoreCase("yes") || availabilityStr.equalsIgnoreCase("true");
 
-        bookTextField.setText("");
+            // Insert book into the database
+            DatabaseUtil.insertIntoBookTable(new RegularBook(isbn, title, author, genre, year, copies));
+
+            // Clear text fields after successful insertion
+            bookTextField.setText("");
+            authorTextField.setText("");
+            genreTextField.setText("");
+            yearsPublishedTextField.setText("");
+            isbnTextField.setText("");
+            copiesTextField.setText("");
+            availabilityTextField.setText("");
+
+            JOptionPane.showMessageDialog(this, "Book added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Year and Copies must be numeric.", "Error", JOptionPane.ERROR_MESSAGE);
+        } /*catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error adding book: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }*/
+        /*bookTextField.setText("");
         authorTextField.setText("");
         genreTextField.setText("");
         yearsPublishedTextField.setText("");
         isbnTextField.setText("");
         copiesTextField.setText("");
-        availabilityTextField.setText("");
+        availabilityTextField.setText("");*/
     }
 
     private void showDeleteBookUI() {
@@ -287,14 +355,20 @@ public class ManageBooksForm extends JFrame {
     }
 
     private void deleteBook() {
-        String bookID = bookIDTextField.getText();
+        String isbn = bookIDTextField.getText();
 
-        // Check if the input is a valid numeric ID
-        if (bookID.isEmpty() || !bookID.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid numeric Book ID.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Book with ID " + bookID + " removed successfully.", "Delete Book", JOptionPane.INFORMATION_MESSAGE);
-            bookIDTextField.setText(""); // Clear the text field after deletion
+        try {
+             if (!isbn.isEmpty()) {
+                DatabaseUtil.deleteBookByISBN(isbn);
+                JOptionPane.showMessageDialog(this, "Book with ISBN " + isbn + " deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid input. Enter either a numeric ID or a valid ISBN.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error deleting book: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            bookIDTextField.setText(""); // Clear the ID field
+            isbnTextField.setText("");  // Clear the ISBN field
         }
     }
 

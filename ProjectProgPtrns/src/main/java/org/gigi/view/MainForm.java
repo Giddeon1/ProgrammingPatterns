@@ -1,5 +1,9 @@
 package org.gigi.view;
 
+import org.gigi.model.Librarian;
+import org.gigi.model.Student;
+import org.gigi.util.DatabaseUtil;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,13 +32,37 @@ public class MainForm extends JFrame {
         setSize(500,300);
         setLocationRelativeTo(null);
 
+        JLabel firstNameLabel = new JLabel("First Name:");
+        //firstNameLabel.setBounds(50, 50, 100, 30);
+        //add(firstNameLabel);
 
-        // Initialize components
-        titleLabel = new JLabel("Library Management System");
-        signInLabel = new JLabel("Sign in");
-        firstNameLabel = new JLabel("First Name");
-        lastNameLabel = new JLabel("Last Name");
-        emailLabel = new JLabel("Email:");
+        firstNameTextField = new JTextField();
+      //  firstNameTextField.setBounds(150, 50, 200, 30);
+       // add(firstNameTextField);
+
+        JLabel lastNameLabel = new JLabel("Last Name:");
+       // lastNameLabel.setBounds(50, 100, 100, 30);
+        //add(lastNameLabel);
+
+        lastNameTextField = new JTextField();
+       // lastNameTextField.setBounds(150, 100, 200, 30);
+       // add(lastNameTextField);
+
+        JLabel emailLabel = new JLabel("Email:");
+       // emailLabel.setBounds(50, 150, 100, 30);
+       // add(emailLabel);
+
+        emailTextField = new JTextField();
+       // emailTextField.setBounds(150, 150, 200, 30);
+       // add(emailTextField);
+
+        String[] userTypes = {"Type of Users","Student", "Librarian"};
+        userComboBox = new JComboBox<>(userTypes);
+
+
+        validateButton = new JButton("Validate");
+
+
 
        /* // Initialize components with localized text  I COMMENTED OUT THE I18N STUFF HERE
         titleLabel = new JLabel(I18NHelper.getString("form.titleLabel"));
@@ -43,21 +71,21 @@ public class MainForm extends JFrame {
         lastNameLabel = new JLabel(I18NHelper.getString("form.lastNameLabel"));
         emailLabel = new JLabel(I18NHelper.getString("form.emailLabel"));*/
 
-        firstNameTextField = new JTextField(15);
+        /*firstNameTextField = new JTextField(15);
         lastNameTextField = new JTextField(15);
-        emailTextField = new JTextField(15);
+        emailTextField = new JTextField(15);*/
 
-        validateButton = new JButton("Validate");
+       // validateButton = new JButton("Validate");
 
        /* validateButton = new JButton(I18NHelper.getString("button.validate"));*/
 
-        userComboBox = new JComboBox<>(new String[] {"Type of Customer","Librarian", "Student"});
+        /*userComboBox = new JComboBox<>(new String[] {"Type of Customer","Librarian", "Student"});*/
         languageComboBox = new JComboBox<>(new String[] {"Type of Language","English", "French"});
 
         // Set layout manager
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-        // Add components to the frame
+        //Add components to the frame
         add(titleLabel);
         add(signInLabel);
         add(firstNameLabel);
@@ -65,31 +93,57 @@ public class MainForm extends JFrame {
         add(lastNameLabel);
         add(lastNameTextField);
         add(emailLabel);
-        add(emailTextField);
-        add(validateButton);
-        add(userComboBox);
+       add(emailTextField);
+       add(validateButton);
+       add(userComboBox);
         add(languageComboBox);
 
         // Add ActionListener for the button
         validateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleValidateButtonClick();
+                //handleValidateButtonClick();
+                saveUser();
             }
         });
 
 
-        userComboBox.addItemListener(new ItemListener() {
+       /* userComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     handleComboBoxSelectionChange();
                 }
             }
-        });
+        });*/
 
         setVisible(true);
     }
+
+
+    private void saveUser() {
+        String firstName = firstNameTextField.getText();
+        String lastName = lastNameTextField.getText();
+        String email = emailTextField.getText();
+        String userType = (String) userComboBox.getSelectedItem();
+
+        try {
+            if (userType.equals("Student")) {
+                DatabaseUtil.insertIntoStudentTable(new Student(firstName, lastName, email));
+                JOptionPane.showMessageDialog(this, "Student added successfully!");
+                new StudentForm();
+                this.dispose();
+            } else if (userType.equals("Librarian")) {
+                DatabaseUtil.insertIntoLibrarianTable(new Librarian(firstName,lastName, email));
+                JOptionPane.showMessageDialog(this, "Librarian added successfully!");
+                new LibrarianForm();
+                this.dispose();
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error saving user: " + ex.getMessage());
+        }
+    }
+
 
     // This method should be defined outside of the ActionListener
     private void handleValidateButtonClick() {
@@ -121,7 +175,7 @@ public class MainForm extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }*/
 
-    private void handleComboBoxSelectionChange() {
+   /* private void handleComboBoxSelectionChange() {
         String selectedRole = (String) userComboBox.getSelectedItem();
         // Do something with the selected role, e.g., update the UI or perform logic
         if ("Librarian".equals(selectedRole)) {
@@ -133,7 +187,7 @@ public class MainForm extends JFrame {
         } else {
             System.out.println("No valid role selected.");
         }
-    }
+    }*/
 
   /*  private void handleComboBoxSelectionChange() { I COMMENTED OUT THE I18N STUFF HERE
         String selectedRole = (String) userComboBox.getSelectedItem();

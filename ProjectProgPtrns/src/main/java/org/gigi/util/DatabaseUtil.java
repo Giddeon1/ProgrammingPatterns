@@ -491,4 +491,36 @@ public class DatabaseUtil {
             WRITE_LOCK.unlock();
         }
    }
+
+    /**
+     *
+     * @param isbn
+     * @throws SQLException
+     */
+    public static void deleteBookByISBN(String isbn) throws SQLException {
+        String query = "DELETE FROM books WHERE isbn = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, isbn);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("No book found with ISBN: " + isbn);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param userId
+     * @throws SQLException
+     */
+    public static void removeUser(int userId) throws SQLException {
+        String query = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
+        }
+    }
+
+
+
 }
