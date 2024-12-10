@@ -1,8 +1,14 @@
 package org.gigi.view;
 
+import org.gigi.model.User;
+import org.gigi.util.DatabaseUtil;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
 
 public class ManageUsersForm extends JFrame {
     private JButton viewUserButton;
@@ -83,6 +89,13 @@ public class ManageUsersForm extends JFrame {
         removingUserButton.setVisible(false);
 
 
+        viewUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewAllUsers();
+            }
+        });
+
         // Add ActionListener for "Search User" button
         searchUserButton.addActionListener(new ActionListener() {
             @Override
@@ -116,7 +129,7 @@ public class ManageUsersForm extends JFrame {
         searchingUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                searchUser();
+                searchUsers();
             }
         });
 
@@ -128,6 +141,36 @@ public class ManageUsersForm extends JFrame {
         });
 
         setVisible(true);
+    }
+
+    private void viewAllUsers() {
+        List<User> users = DatabaseUtil.fetchAllUsers();
+        if (users.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No users found.", "View Users", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String[] columnNames = {"ID", "First Name", "Last Name", "Email", "Role"};
+        String[][] userData = new String[users.size()][columnNames.length];
+
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            userData[i][0] = String.valueOf(user.getUserId());
+            userData[i][1] = user.getFirstName();
+            userData[i][2] = user.getLastName();
+            userData[i][3] = user.getEmail();
+        }
+
+        JTable userTable = new JTable(userData, columnNames);
+        userTable.setEnabled(false);
+        JScrollPane scrollPane = new JScrollPane(userTable);
+
+        JFrame userListFrame = new JFrame("List of Users");
+        userListFrame.setSize(600, 300);
+        userListFrame.setLocationRelativeTo(null);
+        userListFrame.add(scrollPane);
+        userListFrame.setVisible(true);
+
     }
 
     private void showSearchUserUI() {
@@ -162,7 +205,7 @@ public class ManageUsersForm extends JFrame {
     }
 
 
-    private void searchUser() {
+    /*private void searchUser() {
         String username = usernameTextField.getText();
 
         if (username.isEmpty()) {
@@ -171,6 +214,47 @@ public class ManageUsersForm extends JFrame {
             // Replace this with actual search logic (e.g., database query)
             JOptionPane.showMessageDialog(this, "User " + username + " found successfully!", "Search User", JOptionPane.INFORMATION_MESSAGE);
             usernameTextField.setText(""); // Clear the text field after search
+        }
+    }*/
+
+    private void searchUsers() {
+        String keyword = searchingUserButton.getText();
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter a search keyword.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            List<User> users = DatabaseUtil.fetchAllUsers();
+            if (users.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No users found for the search.", "Search Results", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            String[] columnNames = {"ID", "First Name", "Last Name", "Email", "Role"};
+            String[][] userData = new String[users.size()][columnNames.length];
+
+            for (int i = 0; i < users.size(); i++) {
+                User user = users.get(i);
+                userData[i][0] = String.valueOf(user.getUserId());
+                userData[i][1] = user.getFirstName();
+                userData[i][2] = user.getLastName();
+                userData[i][3] = user.getEmail();
+
+            }
+
+            JTable userTable = new JTable(userData, columnNames);
+            userTable.setEnabled(false);
+            JScrollPane scrollPane = new JScrollPane(userTable);
+
+            JFrame searchResultsFrame = new JFrame("Search Results");
+            searchResultsFrame.setSize(600, 300);
+            searchResultsFrame.setLocationRelativeTo(null);
+            searchResultsFrame.add(scrollPane);
+            searchResultsFrame.setVisible(true);
+
+        } catch (HeadlessException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -204,7 +288,7 @@ public class ManageUsersForm extends JFrame {
         repaint();
     }
 
-    private void removeUser() {
+    /*private void removeUser() {
         String userId = userIdTextField.getText();
 
         if (userId.isEmpty()) {
@@ -213,6 +297,23 @@ public class ManageUsersForm extends JFrame {
             // Replace this with actual remove logic (e.g., database update)
             JOptionPane.showMessageDialog(this, "Removed user with ID " + userId + " successfully!", "Remove User", JOptionPane.INFORMATION_MESSAGE);
             userIdTextField.setText(""); // Clear the text field after removal
+        }
+    }*/
+    private void removeUser() {
+        String userIdStr = userIdTextField.getText();
+        if (userIdStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter a valid User ID.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            int userId = Integer.parseInt(userIdStr);
+            DatabaseUtil.removeUser(userId);
+            JOptionPane.showMessageDialog(this, "User removed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error removing user: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid User ID. Please enter a number.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

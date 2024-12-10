@@ -37,9 +37,13 @@
     <build>
         <resources>
             <resource>
-                <directory>ProjectProgPtrns/src/main/resources/messages/Messages.properties</directory>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
             </resource>
         </resources>
     </build>
+
 
 </project>
