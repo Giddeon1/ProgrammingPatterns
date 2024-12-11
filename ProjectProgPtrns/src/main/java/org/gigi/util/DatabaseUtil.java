@@ -642,7 +642,7 @@ public class DatabaseUtil {
     }
 
     /**
-     * this method is for trying to know hwo is logged in
+     * this method is for trying to know who is logged in
      * it gets a user by their email
      * @param email the email that belongs to the user
      * @return the user

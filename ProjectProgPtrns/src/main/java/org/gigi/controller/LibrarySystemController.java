@@ -1,5 +1,7 @@
 package org.gigi.controller;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.gigi.model.*;
 import org.gigi.util.DatabaseUtil;
 
@@ -8,11 +10,14 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+@Getter
+@Setter
 public class LibrarySystemController {
     private static LibrarySystemController librarySystemControllerInstance;
     private LibrarySystem librarySystem;
     private static ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    @Getter
+    @Setter
     private User currentUser;
 
     public static LibrarySystemController getInstance() {
@@ -54,7 +59,11 @@ public class LibrarySystemController {
             }
         }
     }
-
+    /**
+     * Adds a user (either Student or Librarian) to the system.
+     * If the user is a Student, inserts their data into the student table;
+     * if the user is a Librarian, inserts their data into the librarian table.
+     */
     public void addUser(User user) {
         librarySystem.getUsers().add(user);
         if (user instanceof Student) {
@@ -64,8 +73,12 @@ public class LibrarySystemController {
         }
     }
 
+    /**
+     * Allows a user to borrow a book, updating the available copies and creating a borrow record.
+     * Throws an IllegalStateException if no copies are available.
+     */
     public void borrowBook(User user, RegularBook book, Librarian librarian) {
-        //threadPool.submit(() -> {
+
             if (book.getAvailableCopies() > 0) {
                 book.decrementAvailableCopies();
                 DatabaseUtil.updateBookCopies(book.getIsbn(), book.getAvailableCopies());
@@ -76,11 +89,15 @@ public class LibrarySystemController {
             } else {
                 throw new IllegalStateException("No copies of the book are available.");
             }
-        //});
+
     }
 
+    /**
+     * Allows a user to return a borrowed book, updating the available copies and the return record.
+     * Throws an IllegalArgumentException if no borrowed record is found for the given user and book.
+     */
     public void returnBook(User user, RegularBook book) {
-       // threadPool.submit(() -> {
+
             BorrowedBookRecord record = librarySystem.findBorrowedRecord(user, book);
             if (record == null) {
                 throw new IllegalArgumentException("No borrowed record found for this book and user.");
@@ -90,7 +107,7 @@ public class LibrarySystemController {
             DatabaseUtil.updateBookCopies(book.getIsbn(), book.getAvailableCopies());
              DatabaseUtil.updateReturnDate(book.getIsbn(), user.getUserId());
             user.returnBook(record);
-        //});
+
     }
 
     /**
@@ -158,14 +175,6 @@ public class LibrarySystemController {
      */
     public List<Book> fetchBookByAuthor(String authorName) throws SQLException {
         return DatabaseUtil.fetchBooksByAuthor(authorName);
-    }
-
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
     }
 
 

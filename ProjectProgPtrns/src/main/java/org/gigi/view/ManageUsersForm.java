@@ -52,7 +52,7 @@ public class ManageUsersForm extends JFrame {
         usernameTextField = new JTextField(20);
         userIdTextField = new JTextField(20); // Not used here but initialized for completeness
 
-        // Set bounds for Buttons
+        // Sets bounds for Buttons
         viewUserButton.setBounds(20, 20, 150, 30);
         searchUserButton.setBounds(20, 60, 150, 30);
         removeUserButton.setBounds(20, 100, 150, 30);
@@ -61,14 +61,14 @@ public class ManageUsersForm extends JFrame {
         searchingUserButton.setBounds(350, 140, 150, 30);
         removingUserButton.setBounds(350, 140, 150, 30);
 
-        // Set bounds for Labels and TextFields
+        // Sets bounds for Labels and TextFields
         formLabel.setBounds(200, 20, 300, 30);
         enterUsernameLabel.setBounds(200, 100, 100, 30);
         usernameTextField.setBounds(300, 100, 200, 30);
         enterUserIdLabel.setBounds(200, 100, 100, 30);
         userIdTextField.setBounds(300, 100, 200, 30);
 
-        // Add static buttons to frame
+        // Adding static buttons to frame
         add(viewUserButton);
         add(searchUserButton);
         add(removeUserButton);
@@ -90,7 +90,9 @@ public class ManageUsersForm extends JFrame {
         searchingUserButton.setVisible(false);
         removingUserButton.setVisible(false);
 
-
+        /**
+         * Viewing all Users
+         */
         viewUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,7 +100,9 @@ public class ManageUsersForm extends JFrame {
             }
         });
 
-        // Add ActionListener for "Search User" button
+        /**
+         * Searching a user thanks to their username
+         */
         searchUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,14 +110,20 @@ public class ManageUsersForm extends JFrame {
             }
         });
 
+        /**
+         * Goes back to the LibrarianForm
+         */
         goBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Close the current window
-                new LibrarianForm(); // Assuming LibrarianForm is the previous screen
+                dispose();
+                new LibrarianForm();
             }
         });
 
+        /**
+         * Exits out the application
+         */
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -121,6 +131,9 @@ public class ManageUsersForm extends JFrame {
             }
         });
 
+        /**
+         * removing a user by putting in their ID
+         */
         removeUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,6 +141,9 @@ public class ManageUsersForm extends JFrame {
             }
         });
 
+        /**
+         * Searching a user
+         */
         searchingUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -135,6 +151,9 @@ public class ManageUsersForm extends JFrame {
             }
         });
 
+        /**
+         * Confirms the Deletion of the user
+         */
         removingUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,6 +164,10 @@ public class ManageUsersForm extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Displays a list of all users (Students and Librarians) in a tabular format.
+     * Shows a message if no users are found.
+     */
     private void viewAllUsers() {
         List<User> users = librarySystemController.getAllUser();
         if (users.isEmpty()) {
@@ -180,6 +203,10 @@ public class ManageUsersForm extends JFrame {
 
     }
 
+    /**
+     * Displays the user interface for searching users by username.
+     * Hides components related to removing users and shows search-specific fields.
+     */
     private void showSearchUserUI() {
         // Make static buttons visible
 
@@ -211,21 +238,12 @@ public class ManageUsersForm extends JFrame {
         repaint();
     }
 
-
-    /*private void searchUser() {
-        String username = usernameTextField.getText();
-
-        if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Replace this with actual search logic (e.g., database query)
-            JOptionPane.showMessageDialog(this, "User " + username + " found successfully!", "Search User", JOptionPane.INFORMATION_MESSAGE);
-            usernameTextField.setText(""); // Clear the text field after search
-        }
-    }*/
-
+    /**
+     * Searches for users based on a keyword entered in the username text field.
+     * Displays search results in a table. Shows a message if no users are found.
+     */
     private void searchUsers() {
-        String keyword = searchingUserButton.getText();
+        String keyword = usernameTextField.getText();
         if (keyword.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter a search keyword.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -270,14 +288,10 @@ public class ManageUsersForm extends JFrame {
         }
     }
 
-    private void removeDynamicComponentsExceptStatic() {
-        // Remove only dynamic components
-        remove(formLabel);
-        remove(enterUsernameLabel);
-        remove(usernameTextField);
-        remove(searchingUserButton);
-    }
-
+    /**
+     * Displays the user interface for removing a user by their ID.
+     * Hides components related to searching users and shows remove-specific fields.
+     */
     private void showRemoveUserUI() {
         // Show only the components needed for the "Remove User" form
         formLabel.setText("Please Enter the User ID Below");
@@ -300,17 +314,10 @@ public class ManageUsersForm extends JFrame {
         repaint();
     }
 
-    /*private void removeUser() {
-        String userId = userIdTextField.getText();
-
-        if (userId.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Enter a valid ID", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Replace this with actual remove logic (e.g., database update)
-            JOptionPane.showMessageDialog(this, "Removed user with ID " + userId + " successfully!", "Remove User", JOptionPane.INFORMATION_MESSAGE);
-            userIdTextField.setText(""); // Clear the text field after removal
-        }
-    }*/
+    /**
+     * Removes a user from the system based on the provided user ID.
+     * Handles errors for invalid or non-numeric IDs and shows appropriate messages.
+     */
     private void removeUser() {
         String userIdStr = userIdTextField.getText();
         if (userIdStr.isEmpty()) {

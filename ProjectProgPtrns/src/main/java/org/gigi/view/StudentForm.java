@@ -37,7 +37,7 @@ public class StudentForm extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null); // Using null layout for precise control
 
-        // Initialize Components
+        // Initializing all Components
         viewButton = new JButton("View Books");
         returnBookButton = new JButton("Return Books");
         goBackButton = new JButton("Go Back");
@@ -79,7 +79,7 @@ public class StudentForm extends JFrame {
         returnBookIDTextField.setBounds(200, 180, 150, 30);
         returningBookButton.setBounds(360, 180, 150, 30);
 
-        // Add Buttons
+        // Adding Buttons
         add(viewButton);
         add(searchButton);
         add(borrowBookButton);
@@ -87,7 +87,9 @@ public class StudentForm extends JFrame {
         add(goBackButton);
         add(exitButton);
 
-        // Add Action Listeners
+        /**
+         * ActionListener tp view All Books
+         */
         viewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,6 +97,9 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /**
+         * Displays a list of all Books
+         */
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -102,13 +107,18 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /**
+         * Borrowing a book by searching the ID
+         */
         borrowBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showBorrowUI();
             }
         });
-
+        /**
+         * Returning a book by the ID
+         */
         returnBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,6 +126,9 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /**
+         * Going back to the Librarian Form
+         */
         goBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,6 +138,9 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /**
+         * Exiting out the Application
+         */
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,6 +148,9 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /**
+         *Confirms that the book has been borrowed
+         */
         borrowBookIDButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,6 +158,9 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /***
+         * Confirms that the book has been returned
+         */
         returningBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,6 +168,9 @@ public class StudentForm extends JFrame {
             }
         });
 
+        /**
+         * Searching a book either through the title, ID or author
+         */
         searchBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -155,6 +180,11 @@ public class StudentForm extends JFrame {
 
         setVisible(true);
     }
+
+    /**
+     * Displays all books in the library system in a tabular format.
+     * If no books are available, a message is shown to the user.
+     */
 
     private void displayBooks() {
         List<Book> bookList = librarySystemController.getAllBooks();
@@ -190,6 +220,9 @@ public class StudentForm extends JFrame {
         bookListFrame.setVisible(true);
     }
 
+    /**
+     * Displays the search interface for finding books by title, author, or ISBN.
+     */
     private void showSearchUI() {
         hideDynamicComponents();
         add(searchBookLabel);
@@ -200,6 +233,10 @@ public class StudentForm extends JFrame {
         repaint();
     }
 
+    /**
+     * Searches for books based on the selected search criteria (title, author, or ISBN).
+     * Displays search results or an appropriate message if no results are found.
+     */
     private void searchBook() {
         String searchTerm = searchBookTextField.getText();
         String searchType = (String) typeComboBox.getSelectedItem();
@@ -249,8 +286,9 @@ public class StudentForm extends JFrame {
     }
 
     /**
-     * method to help display on da gui
-     * @param books the list of books to display
+     * Displays a list of books in a table format.
+     *
+     * @param books the list of books to display in the table.
      */
     private void viewBookTable(List<Book> books) {
         // Create column headers for the table
@@ -284,6 +322,9 @@ public class StudentForm extends JFrame {
         bookListFrame.setVisible(true);
     }
 
+    /**
+     * Displays the interface for borrowing a book by its ID.
+     */
     private void showBorrowUI() {
         hideDynamicComponents();
         add(searchBookIdLabel);
@@ -293,12 +334,17 @@ public class StudentForm extends JFrame {
         repaint();
     }
 
+    /**
+     * Simulates borrowing a book by ID and shows a confirmation message.
+     */
     private void borrowBook() {
         String bookID = borrowBookIDTextField.getText();
-        //Book book = librarySystemController.fetchBooksByIsbn(bookID);
         JOptionPane.showMessageDialog(this, "Book " + bookID + " has been borrowed successfully", "Borrow Confirmation", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Displays the interface for returning a book by its ID.
+     */
     private void showReturnUI() {
         hideDynamicComponents();
         add(returnBookIdLabel);
@@ -308,11 +354,17 @@ public class StudentForm extends JFrame {
         repaint();
     }
 
+    /**
+     * Simulates returning a book by ID and shows a confirmation message.
+     */
     private void returnBook() {
         String bookID = returnBookIDTextField.getText();
         JOptionPane.showMessageDialog(this, "Book " + bookID + " has been returned successfully", "Return Confirmation", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Hides all dynamic components from the UI to prepare for the next action or screen.
+     */
     private void hideDynamicComponents() {
         remove(searchBookLabel);
         remove(typeComboBox);

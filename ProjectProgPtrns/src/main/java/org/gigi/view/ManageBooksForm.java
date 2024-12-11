@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ManageBooksForm extends JFrame {
-    private List<String> books;
     private JButton searchBookButton;
     private JButton deleteButton;
     private JButton addBookButton;
@@ -38,9 +37,7 @@ public class ManageBooksForm extends JFrame {
     private JLabel availabilityLabel;
     private JTextField authorTextField;
     private JLabel authorLabel;
-    //private JLabel authorLabel2;
     private JTextField bookIDTextField;
-    //private JTextField authorTextField2;
     private final LibrarySystemController librarySystemController = LibrarySystemController.getInstance();
 
     public ManageBooksForm() {
@@ -48,9 +45,9 @@ public class ManageBooksForm extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(600, 500);
         setLocationRelativeTo(null);
-        setLayout(null); // Using null layout for precise control
+        setLayout(null);
 
-        // Initialize Buttons
+        // Initializing Buttons
         searchBookButton = new JButton("Search Book");
         deleteButton = new JButton("Delete Book");
         addBookButton = new JButton("Add Book");
@@ -58,7 +55,7 @@ public class ManageBooksForm extends JFrame {
         exitButton = new JButton("Exit");
         addingBookButton = new JButton("Add Book");
 
-        // Initialize Labels
+        // Initializing Labels
         formLabel = new JLabel("Please Fill in the Form Below");
         titleBookLabel = new JLabel("Title:");
         authorLabel = new JLabel("Author First Name:");
@@ -70,10 +67,9 @@ public class ManageBooksForm extends JFrame {
         availabilityLabel = new JLabel("Availability:");
         bookIdLabel = new JLabel("Book ID:");
 
-        // Initialize TextFields
+        // Initializing TextFields
         bookTextField = new JTextField(20);
         authorTextField = new JTextField(20);
-        //authorTextField2 = new JTextField(20);
         genreTextField = new JTextField(20);
         yearsPublishedTextField = new JTextField(20);
         isbnTextField = new JTextField(20);
@@ -90,15 +86,14 @@ public class ManageBooksForm extends JFrame {
         addingBookButton.setBounds(200, 350, 150, 30);
         deleteBookButton.setBounds(200, 140, 150, 30);
 
-        // Set Bounds for Form Components
+        // Setting Bounds for Form Components
         formLabel.setBounds(200, 20, 200, 30);
         titleBookLabel.setBounds(200, 60, 150, 30);
         bookTextField.setBounds(350, 60, 200, 30);
         authorLabel.setBounds(200, 100, 150, 30);
 
-        //authorLabel2.setBounds(200, 140, 150, 30);
+
         authorTextField.setBounds(350, 100, 200, 30);
-        //authorTextField2.setBounds(350, 140, 200, 30);
         genreLabel.setBounds(200, 180, 150, 30);
         genreTextField.setBounds(350, 140, 200, 30);
         yearsPublishedLabel.setBounds(200, 180, 150, 30);
@@ -112,14 +107,16 @@ public class ManageBooksForm extends JFrame {
         bookIdLabel.setBounds(200, 60, 150, 30);
         bookIDTextField.setBounds(350, 60, 200, 30);
 
-        // Add Static Buttons
+        // Adding Static Buttons
         add(searchBookButton);
         add(addBookButton);
         add(deleteButton);
         add(goBackButton);
         add(exitButton);
 
-
+        /**
+         * Searching Books and displays a list of all books
+         */
         searchBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,7 +124,9 @@ public class ManageBooksForm extends JFrame {
             }
         });
 
-        // Add Action Listeners
+        /**
+         * Adding a book to the list of Books
+         */
         addBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -135,15 +134,20 @@ public class ManageBooksForm extends JFrame {
             }
         });
 
+        /**
+         * Goes back to the Librarian Form
+         */
         goBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Logic for going back (e.g., navigate to previous form)
-                dispose(); // Close current window
-                new LibrarianForm(); // Assuming LoginForm is the previous screen
+                dispose();
+                new LibrarianForm();
             }
         });
 
+        /**
+         * Exits out the Application
+         */
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -151,6 +155,9 @@ public class ManageBooksForm extends JFrame {
             }
         });
 
+        /**
+         * Adds the book to the database and list of all Books
+         */
         addingBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -158,7 +165,9 @@ public class ManageBooksForm extends JFrame {
             }
         });
 
-
+        /**
+         * Deletes a book by putting the ISBN
+         */
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -166,6 +175,9 @@ public class ManageBooksForm extends JFrame {
             }
         });
 
+        /**
+         * Confirms the deletion of the book
+         */
         deleteBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -176,33 +188,10 @@ public class ManageBooksForm extends JFrame {
         setVisible(true);
     }
 
-   /* private void showSearchBookUI() {
-        if (books.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            // Create a new frame to display the books
-            JFrame bookListFrame = new JFrame("List of Books");
-            bookListFrame.setSize(800, 400);
-            bookListFrame.setLocationRelativeTo(null);
-
-            // Create column headers for the table
-            String[] columnNames = {"Title", "Author", "Genre", "Year Published", "ISBN", "Copies", "Availability"};
-
-            // Convert the book list to a 2D array for JTable
-            String[][] bookData = books.toArray(new String[0][0]);
-
-            // Create a JTable with book data
-            JTable bookTable = new JTable(bookData, columnNames);
-            bookTable.setEnabled(false); // Disable editing
-
-            // Add the table to a JScrollPane for better usability
-            JScrollPane scrollPane = new JScrollPane(bookTable);
-            bookListFrame.add(scrollPane);
-
-            bookListFrame.setVisible(true);
-        }
-    }*/
-
+    /**
+     * Displays a list of all books in a tabular format.
+     * Shows a message if no books are available.
+     */
     private void showSearchBookUI() {
         List<Book> bookList = librarySystemController.getAllBooks();
         if (bookList.isEmpty()) {
@@ -210,10 +199,10 @@ public class ManageBooksForm extends JFrame {
             return;
         }
 
-        // Create column headers for the table
+        // Creates column headers for the table
         String[] columnNames = {"ID", "Title", "Author", "Genre", "Year Published", "ISBN", "Copies Available", "Availability"};
 
-        // Convert the book list to a 2D array for JTable
+        // Converts the book of list to a 2D array for JTable
         String[][] bookData = new String[bookList.size()][columnNames.length];
         for (int i = 0; i < bookList.size(); i++) {
             Book book = bookList.get(i);
@@ -227,14 +216,14 @@ public class ManageBooksForm extends JFrame {
             bookData[i][7] = book.isAvailable() ? "Available" : "Not Available";
         }
 
-        // Create a JTable with book data
+        // Creates a JTable with book data
         JTable bookTable = new JTable(bookData, columnNames);
         bookTable.setEnabled(false); // Disable editing
 
-        // Add the table to a JScrollPane for better usability
+        // Adding the table to a JScrollPane for better usability
         JScrollPane scrollPane = new JScrollPane(bookTable);
 
-        // Create a new frame to display the books
+        // Creates a new frame to display the books
         JFrame bookListFrame = new JFrame("List of Books");
         bookListFrame.setSize(800, 400);
         bookListFrame.setLocationRelativeTo(null);
@@ -243,10 +232,10 @@ public class ManageBooksForm extends JFrame {
 
     }
 
-
-
-
-
+    /**
+     * Displays the user interface for adding a new book to the system.
+     * Includes fields for title, author, genre, year, ISBN, and availability.
+     */
     private void showAddBookUI() {
         // Add dynamic components for the "Add Book" form
        add(formLabel);
@@ -274,6 +263,11 @@ public class ManageBooksForm extends JFrame {
         repaint();
     }
 
+    /**
+     * Adds a new book to the library system.
+     * Validates input fields and clears them after successful addition.
+     * Shows appropriate error messages for invalid input.
+     */
     private void addBook() {
         // Mock logic for adding a book
         String title = bookTextField.getText();
@@ -292,19 +286,15 @@ public class ManageBooksForm extends JFrame {
             return;
         }
 
-        // Add book to the list
-       /* books.add(Arrays.toString(new String[]{title, author, genre, year, isbn, copies, availability}));
-        JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);*/
         try {
             int year = Integer.parseInt(yearStr);
             int copies = Integer.parseInt(copiesStr);
             boolean availability = availabilityStr.equalsIgnoreCase("yes") || availabilityStr.equalsIgnoreCase("true");
 
-            // Insert book into the database
+            // Inserting a book into the database
             librarySystemController.addBook(new RegularBook(isbn, title, authorFName, genre, year, copies));
-           // DatabaseUtil.insertIntoBookTable(new RegularBook(isbn, title, author, genre, year, copies));
 
-            // Clear text fields after successful insertion
+            // Clearing the text fields after successful insertion
             bookTextField.setText("");
             authorTextField.setText("");
             genreTextField.setText("");
@@ -317,23 +307,18 @@ public class ManageBooksForm extends JFrame {
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Year and Copies must be numeric.", "Error", JOptionPane.ERROR_MESSAGE);
-        } /*catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error adding book: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }*/
-        /*bookTextField.setText("");
-        authorTextField.setText("");
-        genreTextField.setText("");
-        yearsPublishedTextField.setText("");
-        isbnTextField.setText("");
-        copiesTextField.setText("");
-        availabilityTextField.setText("");*/
+        }
     }
 
+    /**
+     * Displays the user interface for deleting a book using its ISBN.
+     * Removes components unrelated to book deletion.
+     */
     private void showDeleteBookUI() {
         // Remove all dynamically added components first
         removeDynamicComponents();
 
-        // Add components specific to "Delete Book"
+        // Adding components specific to "Delete Book"
         add(formLabel);
         add(bookIdLabel);
         add(bookIDTextField);
@@ -343,13 +328,17 @@ public class ManageBooksForm extends JFrame {
         repaint();
     }
 
+    /**
+     * Removes all dynamically added components from the user interface.
+     * Prepares the UI for the next action or screen.
+     */
     private void removeDynamicComponents() {
-        // Remove components for both Add and Delete book functionality
+        // Removing all components for both Add and Delete book functionality
         remove(formLabel);
         remove(bookIdLabel);
         remove(bookIDTextField);
         remove(deleteBookButton);
-        // Remove Add Book components (in case they are present)
+        // Removing Add Book components (in case they are present)
         remove(titleBookLabel);
         remove(bookTextField);
         remove(authorLabel);
@@ -367,6 +356,10 @@ public class ManageBooksForm extends JFrame {
         remove(addingBookButton);
     }
 
+    /**
+     * Deletes a book from the library system using its ISBN.
+     * Validates input and shows a confirmation or error message.
+     */
     private void deleteBook() {
         String isbn = bookIDTextField.getText();
 
@@ -376,8 +369,8 @@ public class ManageBooksForm extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Invalid input. Enter either a numeric ID or a valid ISBN.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        bookIDTextField.setText(""); // Clear the ID field
-        isbnTextField.setText("");  // Clear the ISBN field
+        bookIDTextField.setText(""); // Clears the ID field
+        isbnTextField.setText("");  // Clears the ISBN field
     }
 
     public static void main(String[] args) {

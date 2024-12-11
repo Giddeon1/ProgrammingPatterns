@@ -45,7 +45,15 @@ public class LibrarySystem {
     }
 
 
-
+    /**
+     * Implement a factory Pattern to determine which type of user it is
+     * @param type
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @return
+     */
     private User createUser(String type, int id, String firstName, String lastName, String email) {
         switch (type.toLowerCase()) {
             case "student" :

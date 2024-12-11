@@ -21,7 +21,7 @@ public class LibrarianForm extends JFrame {
         manageUsersButton = new JButton("Manage Users");
         returnToLoginButton = new JButton("Return to Login");
 
-
+        //Sets a layout
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         add(welcomeLabel);
@@ -29,6 +29,9 @@ public class LibrarianForm extends JFrame {
         add(manageUsersButton);
         add(returnToLoginButton);
 
+        /**
+         * ActionListener for to the returnToLoginButton that goes back to the Login Form
+         */
         returnToLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -37,6 +40,9 @@ public class LibrarianForm extends JFrame {
             }
         });
 
+        /**
+         * ActionListener to Manage All Books and leads to a new Form (ManageBooksForm)
+         */
         manageBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,7 +51,9 @@ public class LibrarianForm extends JFrame {
                 new ManageBooksForm();
             }
         });
-
+        /**
+         * ActionListener to Manage All Users and leads to a new Form (ManageUsersForm)
+         */
         manageUsersButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
