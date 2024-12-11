@@ -2,10 +2,12 @@ package org.gigi.view;
 
 import org.gigi.controller.LibrarySystemController;
 import org.gigi.model.Book;
+import org.gigi.util.DatabaseUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 public class StudentForm extends JFrame {
@@ -161,10 +163,8 @@ public class StudentForm extends JFrame {
             return;
         }
 
-        // Create column headers for the table
         String[] columnNames = {"ID", "Title", "Author", "Genre", "Year Published", "ISBN", "Copies Available", "Availability"};
 
-        // Convert the book list to a 2D array for JTable
         String[][] bookData = new String[bookList.size()][columnNames.length];
         for (int i = 0; i < bookList.size(); i++) {
             Book book = bookList.get(i);
@@ -203,10 +203,85 @@ public class StudentForm extends JFrame {
     private void searchBook() {
         String searchTerm = searchBookTextField.getText();
         String searchType = (String) typeComboBox.getSelectedItem();
-        if (searchType.equals("By ID")) {
+        if (searchType.equals("By Title")) {
+            List<Book> books = librarySystemController.fetchBooksByTitle(searchTerm);
+            if (books.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            } else {
+                viewBookTable(books);
+            }
+        } else if(searchType.equals("By Author")) {
+            try {
+                List<Book> books = librarySystemController.fetchBookByAuthor(searchTerm);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            Book book = DatabaseUtil.fetchBookByISBN(searchTerm);
+            String[] columnNames = {"ID", "Title", "Author Name", "Year Published", "ISBN", "Copies Available", "Availability"};
+            String[][] bookData = new String[1][columnNames.length]; // Only one book, so array size is [1][columns]
+            if (book != null) {
+                bookData[0][0] = String.valueOf(book.getIsbn());
+                bookData[0][1] = book.getTitle();
+                bookData[0][2] = book.getAuthorFName() + " " + book.getAuthorLName();
+                bookData[0][3] = String.valueOf(book.getYear());
+                bookData[0][4] = book.getIsbn();
+                bookData[0][5] = String.valueOf(book.getAvailableCopies());
+                bookData[0][6] = book.isAvailable() ? "Available" : "Not Available";
+
+                JTable bookTable = new JTable(bookData, columnNames);
+                bookTable.setEnabled(false); // Disable editing
+                JScrollPane scrollPane = new JScrollPane(bookTable);
+
+                JFrame bookDetailsFrame = new JFrame("Book Details");
+                bookDetailsFrame.setSize(600, 300);
+                bookDetailsFrame.setLocationRelativeTo(null);
+                bookDetailsFrame.add(scrollPane);
+                bookDetailsFrame.setVisible(true);
+
+            } else {
+                JOptionPane.showMessageDialog(null, "No book found with the given ISBN.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
         }
-        JOptionPane.showMessageDialog(this, "Searching for '" + searchTerm + "' by " + searchType, "Search Results", JOptionPane.INFORMATION_MESSAGE);
+
+    }
+
+    /**
+     * method to help display on da gui
+     * @param books the list of books to display
+     */
+    private void viewBookTable(List<Book> books) {
+        // Create column headers for the table
+        String[] columnNames = {"ID", "Title", "Author Name", "Year Published", "ISBN", "Copies Available", "Availability"};
+
+        // Convert the book list to a 2D array for JTable
+        String[][] bookData = new String[books.size()][columnNames.length];
+        for (int i = 0; i < books.size(); i++) {
+            Book book = books.get(i);
+            bookData[i][0] = String.valueOf(book.getIsbn());
+            bookData[i][1] = book.getTitle();
+            bookData[i][2] = book.getAuthorFName() + " " + book.getAuthorLName();
+            bookData[i][3] = String.valueOf(book.getYear());
+            bookData[i][4] = book.getIsbn();
+            bookData[i][5] = String.valueOf(book.getAvailableCopies());
+            bookData[i][6] = book.isAvailable() ? "Available" : "Not Available";
+        }
+
+        // Create a JTable with book data
+        JTable bookTable = new JTable(bookData, columnNames);
+        bookTable.setEnabled(false); // Disable editing
+
+        // Add the table to a JScrollPane for better usability
+        JScrollPane scrollPane = new JScrollPane(bookTable);
+
+        // Create a new frame to display the books
+        JFrame bookListFrame = new JFrame("List of Books");
+        bookListFrame.setSize(800, 400);
+        bookListFrame.setLocationRelativeTo(null);
+        bookListFrame.add(scrollPane);
+        bookListFrame.setVisible(true);
     }
 
     private void showBorrowUI() {
@@ -220,6 +295,7 @@ public class StudentForm extends JFrame {
 
     private void borrowBook() {
         String bookID = borrowBookIDTextField.getText();
+        //Book book = librarySystemController.fetchBooksByIsbn(bookID);
         JOptionPane.showMessageDialog(this, "Book " + bookID + " has been borrowed successfully", "Borrow Confirmation", JOptionPane.INFORMATION_MESSAGE);
     }
 

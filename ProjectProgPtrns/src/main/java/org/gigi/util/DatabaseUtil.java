@@ -8,15 +8,14 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DatabaseUtil {
-    //todo:
-    // inserting with plain value for all databases or some,
-    // check book columns. do we need to put the total copies? it should increment (+1) once we add a book
-    // query methods
     private static final String DATABASE_URL = "jdbc:sqlite:ProjectProgPtrns/src/main/resources/database/database.db";
     private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static final ReentrantReadWriteLock.ReadLock READ_LOCK = LOCK.readLock();
     private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = LOCK.writeLock();
 
+    /**
+     * method to initialize the database
+     */
     public static void initTables() {
         DatabaseUtil.CREATE_STUDENT_TABLE_SQL();
         DatabaseUtil.CREATE_BOOK_TABLE_SQL();
@@ -201,6 +200,9 @@ public class DatabaseUtil {
         createTable(sql);
     }
 
+    /**
+     * method to create the borrowed book table
+     */
     public static void CREATE_BORROWED_BOOK_TABLE_SQL() {
         String sql = """
                 CREATE TABLE borrowed_books (
@@ -219,6 +221,10 @@ public class DatabaseUtil {
         createTable(sql);
     }
 
+    /**
+     * method to insert a record to the borrowed book record
+     * @param record the record to be inserted
+     */
     public static void insertBorrowRecord(BorrowedBookRecord record) {
         WRITE_LOCK.lock();
         String sql = "INSERT INTO borrowed_books (book_isbn, student_id, librarian_id, borrow_date, due_date, return_date) VALUES (?, ?, ?, ?, ?, NULL)";
@@ -237,6 +243,11 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * method that updates the return date in the borrowed book table
+     * @param isbn the isbn of the book in the borrowed book table
+     * @param userId the userid of the user in the borrowed book table
+     */
     public static void updateReturnDate(String isbn, int userId) {
         WRITE_LOCK.lock();
         String sql = "UPDATE borrowed_books SET return_date = ? WHERE book_isbn = ? AND student_id = ? AND return_date IS NULL";
@@ -256,6 +267,10 @@ public class DatabaseUtil {
         }
     }
 
+    /**
+     * fetchs a list of all users from the database
+     * @return a list of all users
+     */
     public static List<User> fetchAllUsers() {
         READ_LOCK.lock();
         List<User> users = new ArrayList<>();
@@ -275,7 +290,6 @@ public class DatabaseUtil {
                 }
             }
 
-            // Fetch all librarians
             String librarianSql = "SELECT * FROM librarians";
             try (Connection connection = getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(librarianSql);
@@ -327,6 +341,10 @@ public class DatabaseUtil {
         return books;
     }
 
+    /**
+     * method to fetch all borrowed book record
+     * @return a list of borrowed book record
+     */
     public static List<BorrowedBookRecord> fetchAllBorrowedBookRecords() {
         READ_LOCK.lock();
         String sql = "SELECT * FROM borrowed_books";
@@ -335,23 +353,16 @@ public class DatabaseUtil {
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                // Retrieve related data from the borrowed_books table
                 String bookIsbn = resultSet.getString("book_isbn");
                 int studentId = resultSet.getInt("student_id");
                 int librarianId = resultSet.getInt("librarian_id");
-
-                // Fetch associated objects
                 Book book = fetchBookByISBN(bookIsbn);
-                Student student = fetchStudentById(studentId); // Only fetch students
-                Librarian librarian = fetchLibrarianById(librarianId); // Fetch librarian for the record
-
-                // Parse dates
+                Student student = fetchStudentById(studentId);
+                Librarian librarian = fetchLibrarianById(librarianId);
                 LocalDate borrowDate = LocalDate.parse(resultSet.getString("borrow_date"));
                 LocalDate dueDate = LocalDate.parse(resultSet.getString("due_date"));
                 String returnDateStr = resultSet.getString("return_date");
                 LocalDate returnDate = returnDateStr != null ? LocalDate.parse(returnDateStr) : null;
-
-                // Create BorrowedBookRecord object
                 BorrowedBookRecord record = new BorrowedBookRecord(book, student, librarian, dueDate);
                 record.setBorrowDate(borrowDate);
                 if (returnDate != null) {
@@ -367,6 +378,11 @@ public class DatabaseUtil {
         return records;
     }
 
+    /**
+     * method to find a student by their id from the database
+     * @param userId the userid of the student that we want to get
+     * @return the student if found or null if not
+     */
     public static Student fetchStudentById(int userId) {
         READ_LOCK.lock();
         String sql = "SELECT * FROM students WHERE id = ?";
@@ -390,6 +406,11 @@ public class DatabaseUtil {
         return null;
     }
 
+    /**
+     * fetch a librarian by their id
+     * @param userId the userid of the wanted librarian
+     * @return the librarian object if found or null if not found
+     */
     public static Librarian fetchLibrarianById(int userId) {
         READ_LOCK.lock();
         String sql = "SELECT * FROM librarians WHERE id = ?";
@@ -412,8 +433,6 @@ public class DatabaseUtil {
         }
         return null;
     }
-
-
 
     /**
      * method to insert into the book database
@@ -480,8 +499,6 @@ public class DatabaseUtil {
         }
     }
 
-
-
     /**
      * creates a database table using the provided SQL statement.
      * @param statementStr the SQL statement string to create the table.
@@ -540,7 +557,7 @@ public class DatabaseUtil {
                 int rowsAffected = pstmt.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("User with ID " + userId + " removed from librarians table.");
-                    return; // Stop after successful deletion
+                    return;
                 }
             }
             throw new IllegalArgumentException("No user found with ID " + userId);
@@ -594,8 +611,79 @@ public class DatabaseUtil {
         return users;
     }
 
+    /**
+     * Fetches books from the database by a search term that matches
+     * the author's first or last name.
+     * @param searchTerm the term to search for in the author's first or last name
+     * @return a list of Book objects matching the search term
+     * @throws SQLException if a database error occurs
+     */
+    public static List<Book> fetchBooksByAuthor(String searchTerm) throws SQLException {
+        String query = "SELECT * FROM books WHERE author_first_name LIKE ? OR author_last_name LIKE ?";
+        List<Book> books = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            String likePattern = "%" + searchTerm + "%"; // Allow partial matches
+            pstmt.setString(1, likePattern);
+            pstmt.setString(2, likePattern);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                books.add(new RegularBook(
+                        rs.getString("isbn"),
+                        rs.getString("title"),
+                        rs.getString("author_first_name"),
+                        rs.getString("author_last_name"),
+                        rs.getInt("year"),
+                        rs.getInt("total_copies")
+                ));
+            }
+        }
+        return books;
+    }
 
+    /**
+     * this method is for trying to know hwo is logged in
+     * it gets a user by their email
+     * @param email the email that belongs to the user
+     * @return the user
+     */
+    public static User fetchUserByEmail(String email) {
+        String studentQuery = "SELECT * FROM students WHERE email = ?";
+        String librarianQuery = "SELECT * FROM librarians WHERE email = ?";
 
+        try (Connection conn = getConnection()) {
+            // Check students table
+            try (PreparedStatement pstmt = conn.prepareStatement(studentQuery)) {
+                pstmt.setString(1, email);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    return new Student(
+                            rs.getInt("id"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getString("email")
+                    );
+                }
+            }
 
+            // Check librarians table
+            try (PreparedStatement pstmt = conn.prepareStatement(librarianQuery)) {
+                pstmt.setString(1, email);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    return new Librarian(
+                            rs.getInt("id"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getString("email")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching user by email: " + e.getMessage(), e);
+        }
+
+        return null; // Return null if no user is found
+    }
 
 }

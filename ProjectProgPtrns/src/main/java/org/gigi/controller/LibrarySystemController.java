@@ -13,6 +13,7 @@ public class LibrarySystemController {
     private static LibrarySystemController librarySystemControllerInstance;
     private LibrarySystem librarySystem;
     private static ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    private User currentUser;
 
     public static LibrarySystemController getInstance() {
         if (librarySystemControllerInstance == null) {
@@ -130,6 +131,42 @@ public class LibrarySystemController {
         }
     }
 
+    /**
+     * method that gets a list of books matching the title
+     * @param title the title of the book that we want to get
+     * @return a list of books that match the title someway
+     */
+    public List<Book> fetchBooksByTitle(String title) {
+        return DatabaseUtil.fetchBooksByTitle(title);
+    }
+
+    /**
+     * method to get a book by isbn
+     * @param isbn the isbn of the book wanted
+     * @return the book
+     */
+    public Book fetchBooksByIsbn(String isbn) {
+        return DatabaseUtil.fetchBookByISBN(isbn);
+    }
+
+    /**
+     * Fetches books from the database by
+     * search term that matches the author's first or last name.
+     * @param authorName the author that we want to find books of
+     * @return a list of books that have as author a resemblance to the author name
+     * @throws SQLException if something goes wrong
+     */
+    public List<Book> fetchBookByAuthor(String authorName) throws SQLException {
+        return DatabaseUtil.fetchBooksByAuthor(authorName);
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
 
 
 }
