@@ -26,9 +26,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
         // Example: Retrieve and display a label and a button text
         System.out.println(getMessage("form.welcomeLabel")); // Output: Welcome
-        System.out.println(getMessage("button.addBook"));    // Output: Add Book
+        System.out.println(getMessage("button.addBook"));
+        // Output: Add Book
+        DatabaseUtil.DELETE_ALL_TABLES_SQL();
     }
 
     //this did not work something wrong with path

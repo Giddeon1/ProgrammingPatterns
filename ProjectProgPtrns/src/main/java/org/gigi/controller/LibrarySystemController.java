@@ -3,30 +3,55 @@ package org.gigi.controller;
 import org.gigi.model.*;
 import org.gigi.util.DatabaseUtil;
 
+import javax.xml.stream.events.DTD;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class LibrarySystemController {
+    private static LibrarySystemController librarySystemControllerInstance;
     private LibrarySystem librarySystem;
     private static ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
-    public LibrarySystemController() {
-        initTables();
-        this.librarySystem = LibrarySystem.getInstance();
+    public static LibrarySystemController getInstance() {
+        if (librarySystemControllerInstance == null) {
+            synchronized (LibrarySystemController.class) {
+                if (librarySystemControllerInstance == null) {
+                    librarySystemControllerInstance = new LibrarySystemController();
+                }
+            }
+        }
+        return librarySystemControllerInstance;
     }
 
-
-    private void initTables() {
-        DatabaseUtil.CREATE_STUDENT_TABLE_SQL();
-        DatabaseUtil.CREATE_BOOK_TABLE_SQL();
-        DatabaseUtil.CREATE_LIBRARIAN_TABLE_SQL();
-        DatabaseUtil.CREATE_BORROWED_BOOK_TABLE_SQL();
-        
+    private LibrarySystemController() {
+        DatabaseUtil.initTables();
+        this.librarySystem = LibrarySystem.getInstance();
     }
 
     public void addBook(Book book) {
         librarySystem.getBooks().add(book);
         DatabaseUtil.insertIntoBookTable(book);
+    }
+
+    /**
+     * method that removes a book from the database using the db method
+     * and removes the book from the library system list
+     * @param isbn the isbn of the book we want to remove
+     */
+    public void removeBook(String isbn) {
+        for (int i = 0; i < librarySystem.getBooks().size(); i++) {
+            if (librarySystem.getBooks().get(i).getIsbn().equals(isbn)) {
+                librarySystem.getBooks().remove(i);
+                try {
+                    DatabaseUtil.deleteBookByISBN(isbn);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
     }
 
     public void addUser(User user) {
@@ -66,5 +91,45 @@ public class LibrarySystemController {
             user.returnBook(record);
         //});
     }
+
+    /**
+     * uses db method to fetch all books in the db
+     * @return all books from the db
+     */
+    public List<Book> getAllBooks() {
+        return DatabaseUtil.fetchAllBooks();
+    }
+
+    /**
+     * uses db method to fetch all users in the db
+     * @return a list of users from the db
+     */
+    public List<User> getAllUser() {
+        return DatabaseUtil.fetchAllUsers();
+    }
+
+    /**
+     * uses the db method to fetch users with a keyword
+     * @param keyword the word to be used to find users
+     * @return a list of users where their first or last name matches the keyword
+     */
+    public List<User> searchUsers(String keyword) {
+        return DatabaseUtil.searchUsersByKeyword(keyword);
+    }
+
+    /**
+     * uses the db method to remove a user from the database and the library system list
+     * @param userId the userId to be removed from the db and the library system list
+     */
+    public void removeUser(int userId) throws SQLException {
+        for (int i = 0; i < librarySystem.getUsers().size(); i++) {
+            if (librarySystem.getUsers().get(i).getUserId() == userId) {
+                librarySystem.getUsers().remove(i);
+                DatabaseUtil.removeUser(userId);
+            }
+        }
+    }
+
+
 
 }

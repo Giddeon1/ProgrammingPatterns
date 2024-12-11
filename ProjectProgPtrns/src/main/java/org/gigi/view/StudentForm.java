@@ -1,8 +1,12 @@
 package org.gigi.view;
 
+import org.gigi.controller.LibrarySystemController;
+import org.gigi.model.Book;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class StudentForm extends JFrame {
     private JButton viewButton;
@@ -22,6 +26,7 @@ public class StudentForm extends JFrame {
     private JLabel returnBookIdLabel;
     private JTextField returnBookIDTextField;
     private JButton returningBookButton;
+    private final LibrarySystemController librarySystemController = LibrarySystemController.getInstance();
 
     public StudentForm() {
         setTitle("Student - Library Management System");
@@ -150,11 +155,39 @@ public class StudentForm extends JFrame {
     }
 
     private void displayBooks() {
-        // Mock data for now (You can replace it with real data fetching logic)
-        String books = "Book ID: 1, Title: Java Basics, Author: John Doe\n" +
-                "Book ID: 2, Title: Advanced Java, Author: Jane Smith\n" +
-                "Book ID: 3, Title: Database Concepts, Author: Alan Turing";
-        JOptionPane.showMessageDialog(this, books, "List of Books", JOptionPane.INFORMATION_MESSAGE);
+        List<Book> bookList = librarySystemController.getAllBooks();
+        if (bookList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Create column headers for the table
+        String[] columnNames = {"ID", "Title", "Author", "Genre", "Year Published", "ISBN", "Copies Available", "Availability"};
+
+        // Convert the book list to a 2D array for JTable
+        String[][] bookData = new String[bookList.size()][columnNames.length];
+        for (int i = 0; i < bookList.size(); i++) {
+            Book book = bookList.get(i);
+            bookData[i][0] = String.valueOf(book.getIsbn());
+            bookData[i][1] = book.getTitle();
+            bookData[i][2] = book.getAuthorFName();
+            bookData[i][3] = book.getAuthorLName(); //can you make this into genre?
+            bookData[i][4] = String.valueOf(book.getYear());
+            bookData[i][5] = book.getIsbn();
+            bookData[i][6] = String.valueOf(book.getAvailableCopies());
+            bookData[i][7] = book.isAvailable() ? "Available" : "Not Available";
+        }
+
+        JTable bookTable = new JTable(bookData, columnNames);
+        bookTable.setEnabled(false); // Disable editing
+
+        JScrollPane scrollPane = new JScrollPane(bookTable);
+        
+        JFrame bookListFrame = new JFrame("List of Books");
+        bookListFrame.setSize(800, 400);
+        bookListFrame.setLocationRelativeTo(null);
+        bookListFrame.add(scrollPane);
+        bookListFrame.setVisible(true);
     }
 
     private void showSearchUI() {
@@ -170,6 +203,9 @@ public class StudentForm extends JFrame {
     private void searchBook() {
         String searchTerm = searchBookTextField.getText();
         String searchType = (String) typeComboBox.getSelectedItem();
+        if (searchType.equals("By ID")) {
+
+        }
         JOptionPane.showMessageDialog(this, "Searching for '" + searchTerm + "' by " + searchType, "Search Results", JOptionPane.INFORMATION_MESSAGE);
     }
 

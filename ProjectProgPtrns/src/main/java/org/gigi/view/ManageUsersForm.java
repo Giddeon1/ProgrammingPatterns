@@ -1,7 +1,8 @@
 package org.gigi.view;
 
+import org.gigi.controller.LibrarySystemController;
+import org.gigi.model.Student;
 import org.gigi.model.User;
-import org.gigi.util.DatabaseUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class ManageUsersForm extends JFrame {
     private JLabel enterUserIdLabel;
     private JLabel enterUsernameLabel;
     private JLabel formLabel;
+    private final LibrarySystemController librarySystemController = LibrarySystemController.getInstance();
 
     public ManageUsersForm() {
         // Frame setup
@@ -144,7 +146,7 @@ public class ManageUsersForm extends JFrame {
     }
 
     private void viewAllUsers() {
-        List<User> users = DatabaseUtil.fetchAllUsers();
+        List<User> users = librarySystemController.getAllUser();
         if (users.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No users found.", "View Users", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -159,6 +161,11 @@ public class ManageUsersForm extends JFrame {
             userData[i][1] = user.getFirstName();
             userData[i][2] = user.getLastName();
             userData[i][3] = user.getEmail();
+            if (user instanceof Student) {
+                userData[i][4] = "Student";
+            } else {
+                userData[i][4] = "Librarian";
+            }
         }
 
         JTable userTable = new JTable(userData, columnNames);
@@ -225,7 +232,7 @@ public class ManageUsersForm extends JFrame {
         }
 
         try {
-            List<User> users = DatabaseUtil.fetchAllUsers();
+            List<User> users = librarySystemController.searchUsers(keyword);
             if (users.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No users found for the search.", "Search Results", JOptionPane.INFORMATION_MESSAGE);
                 return;
@@ -240,6 +247,11 @@ public class ManageUsersForm extends JFrame {
                 userData[i][1] = user.getFirstName();
                 userData[i][2] = user.getLastName();
                 userData[i][3] = user.getEmail();
+                if (user instanceof Student) {
+                    userData[i][4] = "Student";
+                } else {
+                    userData[i][4] = "Librarian";
+                }
 
             }
 
@@ -307,13 +319,13 @@ public class ManageUsersForm extends JFrame {
         }
 
         try {
-            int userId = Integer.parseInt(userIdStr);
-            DatabaseUtil.removeUser(userId);
-            JOptionPane.showMessageDialog(this, "User removed successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error removing user: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (NumberFormatException ex) {
+            librarySystemController.removeUser(Integer.parseInt(userIdTextField.getText()));
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error removing user: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid User ID. Please enter a number.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            userIdTextField.setText("");
         }
     }
 
