@@ -3,6 +3,7 @@ package org.gigi.view;
 import org.gigi.controller.LibrarySystemController;
 import org.gigi.model.Librarian;
 import org.gigi.model.Student;
+import org.gigi.model.User;
 import org.gigi.util.DatabaseUtil;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class MainForm extends JFrame {
     private JButton validateButton;
     private JComboBox<String> userComboBox;
     private JComboBox<String> languageComboBox;
+    private String loggedInUserEmail;
     private final LibrarySystemController librarySystemController = LibrarySystemController.getInstance();
 
 
@@ -112,6 +114,7 @@ public class MainForm extends JFrame {
                             " are not empty and make sure user type is chosen. and make sure email is valid!", "Book display", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     saveUser();
+
                 }
             }
         });
@@ -134,16 +137,18 @@ public class MainForm extends JFrame {
         String firstName = firstNameTextField.getText();
         String lastName = lastNameTextField.getText();
         String email = emailTextField.getText();
+        loggedInUserEmail = emailTextField.getText();
         String userType = (String) userComboBox.getSelectedItem();
-
         try {
             if (userType.equals("Student")) {
                 librarySystemController.addUser(new Student(firstName, lastName, email));
+                User loggedInUser = DatabaseUtil.fetchUserByEmail(loggedInUserEmail);
                 JOptionPane.showMessageDialog(this, "Student added successfully!");
                 new StudentForm();
                 this.dispose();
             } else if (userType.equals("Librarian")) {
                 librarySystemController.addUser(new Librarian(firstName,lastName, email));
+                User loggedInUser = DatabaseUtil.fetchUserByEmail(loggedInUserEmail);
                 JOptionPane.showMessageDialog(this, "Librarian added successfully!");
                 new LibrarianForm();
                 this.dispose();
@@ -223,10 +228,9 @@ public class MainForm extends JFrame {
             return resourceBundle.getString(key);
         }
     }
-
-
-
+    
     public static void main(String[] args) {
+        //sir, you need to delete it for every run so it wont say oh you created this table before
         DatabaseUtil.DELETE_ALL_TABLES_SQL();
         /*Locale defaultLocale = Locale.ENGLISH; I COMMENTED OUT THE I18N STUFF HERE
         I18NHelper.initialize(defaultLocale);*/
