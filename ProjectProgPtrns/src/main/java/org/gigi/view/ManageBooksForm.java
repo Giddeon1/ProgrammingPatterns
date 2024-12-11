@@ -1,5 +1,6 @@
 package org.gigi.view;
 
+import org.gigi.controller.LibrarySystemController;
 import org.gigi.model.Book;
 import org.gigi.model.RegularBook;
 import org.gigi.util.DatabaseUtil;
@@ -37,7 +38,10 @@ public class ManageBooksForm extends JFrame {
     private JLabel availabilityLabel;
     private JTextField authorTextField;
     private JLabel authorLabel;
+    //private JLabel authorLabel2;
     private JTextField bookIDTextField;
+    //private JTextField authorTextField2;
+    private final LibrarySystemController librarySystemController = LibrarySystemController.getInstance();
 
     public ManageBooksForm() {
         setTitle("Manage Books - Library Management System");
@@ -57,7 +61,8 @@ public class ManageBooksForm extends JFrame {
         // Initialize Labels
         formLabel = new JLabel("Please Fill in the Form Below");
         titleBookLabel = new JLabel("Title:");
-        authorLabel = new JLabel("Author:");
+        authorLabel = new JLabel("Author First Name:");
+        //authorLabel2 = new JLabel("Author Last Name:");
         genreLabel = new JLabel("Genre:");
         yearsPublishedLabel = new JLabel("Year Published:");
         isbnLabel = new JLabel("ISBN:");
@@ -68,6 +73,7 @@ public class ManageBooksForm extends JFrame {
         // Initialize TextFields
         bookTextField = new JTextField(20);
         authorTextField = new JTextField(20);
+        //authorTextField2 = new JTextField(20);
         genreTextField = new JTextField(20);
         yearsPublishedTextField = new JTextField(20);
         isbnTextField = new JTextField(20);
@@ -89,8 +95,11 @@ public class ManageBooksForm extends JFrame {
         titleBookLabel.setBounds(200, 60, 150, 30);
         bookTextField.setBounds(350, 60, 200, 30);
         authorLabel.setBounds(200, 100, 150, 30);
+
+        //authorLabel2.setBounds(200, 140, 150, 30);
         authorTextField.setBounds(350, 100, 200, 30);
-        genreLabel.setBounds(200, 140, 150, 30);
+        //authorTextField2.setBounds(350, 140, 200, 30);
+        genreLabel.setBounds(200, 180, 150, 30);
         genreTextField.setBounds(350, 140, 200, 30);
         yearsPublishedLabel.setBounds(200, 180, 150, 30);
         yearsPublishedTextField.setBounds(350, 180, 200, 30);
@@ -195,7 +204,7 @@ public class ManageBooksForm extends JFrame {
     }*/
 
     private void showSearchBookUI() {
-        List<Book> bookList = DatabaseUtil.fetchAllBooks();
+        List<Book> bookList = librarySystemController.getAllBooks();
         if (bookList.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No books available.", "Search Book", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -244,7 +253,9 @@ public class ManageBooksForm extends JFrame {
         add(titleBookLabel);
         add(bookTextField);
         add(authorLabel);
+        //add(authorLabel2);
         add(authorTextField);
+        //add(authorTextField2);
         add(genreLabel);
         add(genreTextField);
         add(yearsPublishedLabel);
@@ -266,16 +277,17 @@ public class ManageBooksForm extends JFrame {
     private void addBook() {
         // Mock logic for adding a book
         String title = bookTextField.getText();
-        String author = authorTextField.getText();
+        String authorFName = authorTextField.getText();
+        //String authorLName = authorTextField2.getText();
         String genre = genreTextField.getText();
         String yearStr = yearsPublishedTextField.getText();
         String isbn = isbnTextField.getText();
         String copiesStr = copiesTextField.getText();
         String availabilityStr = availabilityTextField.getText();
 
-        JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + author, "Add Book", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Book added successfully:\nTitle: " + title + "\nAuthor: " + authorFName+" "+genre, "Add Book", JOptionPane.INFORMATION_MESSAGE);
 
-        if (title.isEmpty() || author.isEmpty() || isbn.isEmpty() || yearStr.isEmpty() || copiesStr.isEmpty()) {
+        if (title.isEmpty() || authorFName.isEmpty() ||genre.isEmpty() || isbn.isEmpty() || yearStr.isEmpty() || copiesStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -289,7 +301,8 @@ public class ManageBooksForm extends JFrame {
             boolean availability = availabilityStr.equalsIgnoreCase("yes") || availabilityStr.equalsIgnoreCase("true");
 
             // Insert book into the database
-            DatabaseUtil.insertIntoBookTable(new RegularBook(isbn, title, author, genre, year, copies));
+            librarySystemController.addBook(new RegularBook(isbn, title, authorFName, genre, year, copies));
+           // DatabaseUtil.insertIntoBookTable(new RegularBook(isbn, title, author, genre, year, copies));
 
             // Clear text fields after successful insertion
             bookTextField.setText("");
@@ -357,19 +370,14 @@ public class ManageBooksForm extends JFrame {
     private void deleteBook() {
         String isbn = bookIDTextField.getText();
 
-        try {
-             if (!isbn.isEmpty()) {
-                DatabaseUtil.deleteBookByISBN(isbn);
-                JOptionPane.showMessageDialog(this, "Book with ISBN " + isbn + " deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Invalid input. Enter either a numeric ID or a valid ISBN.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error deleting book: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            bookIDTextField.setText(""); // Clear the ID field
-            isbnTextField.setText("");  // Clear the ISBN field
+        if (!isbn.isEmpty()) {
+            librarySystemController.removeBook(isbn);
+            JOptionPane.showMessageDialog(this, "Book with ISBN " + isbn + " deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid input. Enter either a numeric ID or a valid ISBN.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        bookIDTextField.setText(""); // Clear the ID field
+        isbnTextField.setText("");  // Clear the ISBN field
     }
 
     public static void main(String[] args) {

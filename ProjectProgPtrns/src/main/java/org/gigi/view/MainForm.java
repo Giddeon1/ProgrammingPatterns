@@ -1,5 +1,6 @@
 package org.gigi.view;
 
+import org.gigi.controller.LibrarySystemController;
 import org.gigi.model.Librarian;
 import org.gigi.model.Student;
 import org.gigi.util.DatabaseUtil;
@@ -24,6 +25,7 @@ public class MainForm extends JFrame {
     private JButton validateButton;
     private JComboBox<String> userComboBox;
     private JComboBox<String> languageComboBox;
+    private final LibrarySystemController librarySystemController = LibrarySystemController.getInstance();
 
 
     public MainForm() {
@@ -103,7 +105,14 @@ public class MainForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //handleValidateButtonClick();
-                saveUser();
+                if (firstNameTextField.getText().isEmpty() || lastNameTextField.getText().isEmpty()
+                        ||emailTextField.getText().isEmpty()||
+                        userComboBox.getSelectedIndex() == -1) {
+                    JOptionPane.showMessageDialog(MainForm.this, "Please make sure all fields" +
+                            " are not empty and make sure user type is chosen. and make sure email is valid!", "Book display", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    saveUser();
+                }
             }
         });
 
@@ -129,12 +138,12 @@ public class MainForm extends JFrame {
 
         try {
             if (userType.equals("Student")) {
-                DatabaseUtil.insertIntoStudentTable(new Student(firstName, lastName, email));
+                librarySystemController.addUser(new Student(firstName, lastName, email));
                 JOptionPane.showMessageDialog(this, "Student added successfully!");
                 new StudentForm();
                 this.dispose();
             } else if (userType.equals("Librarian")) {
-                DatabaseUtil.insertIntoLibrarianTable(new Librarian(firstName,lastName, email));
+                librarySystemController.addUser(new Librarian(firstName,lastName, email));
                 JOptionPane.showMessageDialog(this, "Librarian added successfully!");
                 new LibrarianForm();
                 this.dispose();
@@ -218,6 +227,7 @@ public class MainForm extends JFrame {
 
 
     public static void main(String[] args) {
+        DatabaseUtil.DELETE_ALL_TABLES_SQL();
         /*Locale defaultLocale = Locale.ENGLISH; I COMMENTED OUT THE I18N STUFF HERE
         I18NHelper.initialize(defaultLocale);*/
         new MainForm();

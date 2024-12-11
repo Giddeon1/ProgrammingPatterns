@@ -17,6 +17,12 @@ public class DatabaseUtil {
     private static final ReentrantReadWriteLock.ReadLock READ_LOCK = LOCK.readLock();
     private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = LOCK.writeLock();
 
+    public static void initTables() {
+        DatabaseUtil.CREATE_STUDENT_TABLE_SQL();
+        DatabaseUtil.CREATE_BOOK_TABLE_SQL();
+        DatabaseUtil.CREATE_LIBRARIAN_TABLE_SQL();
+        DatabaseUtil.CREATE_BORROWED_BOOK_TABLE_SQL();
+    }
 
     public static void DELETE_ALL_TABLES_SQL() {
         String[] deleteTableSQLs = {
@@ -292,9 +298,10 @@ public class DatabaseUtil {
     }
 
 
-
-
-
+    /**
+     * fetches all books in the database
+     * @return a list of books
+     */
     public static List<Book> fetchAllBooks() {
         READ_LOCK.lock();
         String sql = "SELECT * FROM books";
@@ -509,17 +516,85 @@ public class DatabaseUtil {
     }
 
     /**
-     *
-     * @param userId
-     * @throws SQLException
+     * method to remove a specific user by their id
+     * searches both teacher and student table
+     * @param userId the user id to be removed
+     * @throws SQLException exception that may or may not arise
      */
     public static void removeUser(int userId) throws SQLException {
-        String query = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, userId);
-            pstmt.executeUpdate();
+        String studentQuery = "DELETE FROM students WHERE id = ?";
+        String librarianQuery = "DELETE FROM librarians WHERE id = ?";
+
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement pstmt = conn.prepareStatement(studentQuery)) {
+                pstmt.setInt(1, userId);
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("User with ID " + userId + " removed from students table.");
+                    return; // Stop after successful deletion
+                }
+            }
+
+            try (PreparedStatement pstmt = conn.prepareStatement(librarianQuery)) {
+                pstmt.setInt(1, userId);
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("User with ID " + userId + " removed from librarians table.");
+                    return; // Stop after successful deletion
+                }
+            }
+            throw new IllegalArgumentException("No user found with ID " + userId);
         }
     }
+
+    /**
+     * method to find users by a specific keyword, checks their firstname and last name
+     * @param keyword the keyword to use to search the db
+     * @return a list of users that their fname or lname match the keyword
+     */
+    public static List<User> searchUsersByKeyword(String keyword) {
+        List<User> users = new ArrayList<>();
+        READ_LOCK.lock();
+        String studentQuery = "SELECT * FROM students WHERE first_name LIKE ? OR last_name LIKE ?";
+        String librarianQuery = "SELECT * FROM librarians WHERE first_name LIKE ? OR last_name LIKE ?";
+
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement studentStmt = connection.prepareStatement(studentQuery)) {
+                studentStmt.setString(1, "%" + keyword + "%");
+                studentStmt.setString(2, "%" + keyword + "%");
+                ResultSet studentResults = studentStmt.executeQuery();
+                while (studentResults.next()) {
+                    users.add(new Student(
+                            studentResults.getInt("id"),
+                            studentResults.getString("first_name"),
+                            studentResults.getString("last_name"),
+                            studentResults.getString("email")
+                    ));
+                }
+            }
+
+            try (PreparedStatement librarianStmt = connection.prepareStatement(librarianQuery)) {
+                librarianStmt.setString(1, "%" + keyword + "%");
+                librarianStmt.setString(2, "%" + keyword + "%");
+                ResultSet librarianResults = librarianStmt.executeQuery();
+                while (librarianResults.next()) {
+                    users.add(new Librarian(
+                            librarianResults.getInt("id"),
+                            librarianResults.getString("first_name"),
+                            librarianResults.getString("last_name"),
+                            librarianResults.getString("email")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error searching users by keyword: " + e.getMessage(), e);
+        } finally {
+            READ_LOCK.unlock();
+        }
+        return users;
+    }
+
+
 
 
 
