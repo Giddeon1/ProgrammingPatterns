@@ -212,20 +212,8 @@ public class ManageUsersForm extends JFrame {
     }
 
 
-    /*private void searchUser() {
-        String username = usernameTextField.getText();
-
-        if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Replace this with actual search logic (e.g., database query)
-            JOptionPane.showMessageDialog(this, "User " + username + " found successfully!", "Search User", JOptionPane.INFORMATION_MESSAGE);
-            usernameTextField.setText(""); // Clear the text field after search
-        }
-    }*/
-
     private void searchUsers() {
-        String keyword = searchingUserButton.getText();
+        String keyword = usernameTextField.getText();
         if (keyword.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Enter a search keyword.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
